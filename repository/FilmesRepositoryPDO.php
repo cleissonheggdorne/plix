@@ -17,6 +17,9 @@ class FilmesRepositoryPDO{
         $sql = "SELECT * FROM filmes";
         //Retorna conjunto de dados
         $filmes = $this->conexao->query($sql);
+        
+        if(!$filmes) return false;
+
         while($filme = $filmes->fetchObject()){ //fetchobject cria objeto utilizando os mesos nomes no banco de dados
             array_push($filmesLista, $filme); //lista filmes 1 a 1
         }
