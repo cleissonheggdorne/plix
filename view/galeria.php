@@ -41,22 +41,26 @@ $filmes = $controller->index();
             cadastrado</p>"?>
         <?php
             foreach($filmes as $filme): ?>
-            <div class="col s12 m6 l3"> <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
-                <div class="card hoverable"> <!--Cartão  com efeito sombra ao colocar e retirar o mouse-->
-                   
+            <div class="col s7 m4 l4 xl3"> <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+               
+                <div class="card">
                     <div class="card-image">
-                        <img src="<?= $filme->poster ?>">
+                        <img class="activator" src="<?= $filme->poster ?>">
                         <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red"
                             data-id="<?= $filme->id ?>">
                             <i class="material-icons"><?= ($filme->favorito)?"favorite":"favorite_border" ?></i></button> <!--ícone Favorito-->
                     </div>
-                   
                     <div class="card-content">
-                    <p class="valign-wrapper"> <!--Classe para alinhamento de elementos-->
+                        <p class="valign-wrapper"> <!--Classe para alinhamento de elementos-->
                             <i class="material-icons amber-text">star</i><?= $filme->nota ?></p>
-                    <span class="card-title"><strong><?= $filme->titulo ?></strong></span>
+                        <span class="card-title"><strong><?= $filme->titulo ?></strong></span>
                     </div>
-
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4"><?= $filme->titulo ?><i class="material-icons right">close</i></span>
+                        <p><?= substr($filme->sinopse, 0, 500)."..." ?></p>
+                        <button class="waves-effect waves-light btn-small right red accent-2 btn-delete" data-id="<?=$filme->id?>">
+                            <i class="material-icons">delete</i></button>
+                    </div>
                 </div>
             </div>
         <?php endforeach ?>
@@ -69,7 +73,7 @@ $filmes = $controller->index();
         document.querySelectorAll(".btn-fav").forEach(btn=>{
             btn.addEventListener("click", e =>{ //Mudança do texto do html para modificar o ícone
                 const id = btn.getAttribute("data-id") //informação do id do botão clicado
-                fetch(`/favoritar/${id}`) //faz a solicitação favoritar
+                fetch(`/favoritar/${id}`) //faz a solicitação delete
                 .then(response => response.json()) //quando tiver a resposta, converto para json
                 .then(response =>{ //após a conversão
                     if(response.success === "ok"){ //Verifico o atributo success, se OK
@@ -85,6 +89,28 @@ $filmes = $controller->index();
                 })
             });
         });
+    </script>
+
+    <script>
+            //Delete
+            document.querySelectorAll(".btn-delete").forEach(btn=>{
+                btn.addEventListener("click", e =>{ 
+                    const id = btn.getAttribute("data-id") //informação do id do botão clicado
+                    const requestConfig = {method:"DELETE", headers: new Headers()}
+                    fetch(`/filmes/${id}`, requestConfig) //faz a solicitação de deletar
+                    .then(response => response.json()) //quando tiver a resposta, converto para json
+                    .then(response =>{ //após a conversão
+                        if(response.success === "ok"){ //Verifico o atributo success, se OK
+                            const card = btn.closest(".col") //pegar elemento mais próximo do botão
+                            card.classList.add("fadeOut")//Adiciona classe com efeito de FadeOut
+                            setTimeout(()=>card.remove(), 1000) //executa a função após certo tempo
+                        }
+                    })
+                    .catch(error => {
+                        M.toast({html: "Erro ao Apagar"})
+                    })
+                });
+            });
     </script>
 
 </body>

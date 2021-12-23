@@ -25,7 +25,16 @@ if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){
     $controller->favorite(basename($rota)); //Passa apenas a base da url (id do filme) 
     exit();
 }
-       
+    
+if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
+    if($metodo == "GET") require "./view/galeria.php";
+    if($metodo == "DELETE") {
+        $controller= new FilmesController();
+        $controller->delete(basename($rota)); //Passa apenas a base da url (id do filme) 
+    }
+    exit();
+}
+
 require "./view/404.php";
 
 ?>
