@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 
 $rota = $_SERVER["REQUEST_URI"];
 $metodo = $_SERVER["REQUEST_METHOD"];
