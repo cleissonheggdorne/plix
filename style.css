@@ -21,3 +21,43 @@ nav ul li.active, .tab a.active {
     opacity:0;
     transition: 1s;
 }
+
+.card .card-content {
+    padding: 15px;
+    border-radius: 0 0 2px 2px;
+   
+}
+
+.section{
+    height: 500px;
+    position: relative;
+}
+
+.img-apresentacao{
+    opacity: 70%;
+    position: center;
+    object-fit: contain;
+}
+
+.btn-flat{
+   align-content: center;
+}
+
+.btn-floating.halfway-fab {
+    position: absolute;
+    right: 10px;
+    top: 10px; 
+    /*bottom: 0px;*/
+}
+
+button[name="edit"] {
+
+    position: absolute;
+    right: 30px;
+    top: 10px; 
+    /*bottom: 0px;*/
+ 
+    
+}
+
+

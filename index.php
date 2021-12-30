@@ -6,11 +6,36 @@ $metodo = $_SERVER["REQUEST_METHOD"];
 
 require "./controller/FilmesController.php";
 
+//Pagina Galeria
 if ($rota === "/") {
     require "./view/galeria.php";
     exit();
 }
 
+//Pagina Favoritos
+if ($rota === "/favoritos") {
+    require "./view/favoritos.php";
+    exit();
+}
+
+//Pagina individual de cada filme
+if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
+    require "./view/assistir.php";
+    //pageFilme($_GET["id"]);
+    exit();
+}
+
+//Pagina Editar
+if (substr($rota, 0, strlen("/editar")) ==="/editar"){
+    if($metodo == "GET") require "./view/editar.php";
+        if($metodo == "POST") {
+            $controller = new FilmesController();
+            $controller->edit($_REQUEST);
+        };
+        exit();
+}
+
+//Página Cadastrar
 if ($rota === "/novo") {
     if($metodo == "GET") require "./view/cadastrar.php";
         if($metodo == "POST") {
@@ -20,12 +45,14 @@ if ($rota === "/novo") {
         exit();
 }
 
+//Rota de Favoritar
 if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){
     $controller= new FilmesController();
     $controller->favorite(basename($rota)); //Passa apenas a base da url (id do filme) 
     exit();
 }
-    
+  
+//Rota de deletar
 if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
     if($metodo == "GET") require "./view/galeria.php";
     if($metodo == "DELETE") {
@@ -34,6 +61,7 @@ if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
     }
     exit();
 }
+
 
 require "./view/404.php";
 

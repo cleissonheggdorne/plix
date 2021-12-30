@@ -57,6 +57,37 @@ class FilmesController{
         header('Content-type: application/json');
         echo json_encode($result);
     }
+
+    public function edit($request){
+       
+        $filmesRepository = new FilmesRepositoryPDO();
+        $filme = (object) $request;
+
+        $upload = $this->savePoster($_FILES);
+
+        if(gettype($upload)=="string"){
+            $filme->poster = $upload;
+        }
+
+        if($filmesRepository->editar($filme))  //Executa a instrução//
+            $_SESSION["msg"] = "Modificações efetuadas com sucesso";
+        else
+            $_SESSION["msg"] = "Erro ao modificar informações doe filme";
+
+        header("Location: /"); //Redirecionamento de página
+
+    }
+
+
+    public function fav(){
+        $filmesRepository = new FilmesRepositoryPDO();
+        return $filmesRepository->listarFavoritos();
+    }
+
+    public function pageFilme($id){
+        $filmesRepository = new FilmesRepositoryPDO();
+        return $filmesRepository->listarInfoFilme($id);
+    }
 }
 
 ?>

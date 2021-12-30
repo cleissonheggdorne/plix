@@ -1,6 +1,11 @@
 <?php include "cabecalho.php" ?>
+<?php
+$controller = new FilmesController();
+$filmes = $controller->index();
+//$controller = new FilmesController();
+$assistirFilme = $controller-> pageFilme($_GET['id']);
 
-
+?>
 <body>
 
     <nav class="nav-extended purple lighten-3">
@@ -23,22 +28,21 @@
                 <!--Card contendo os inputs -->
                 <div class="card">
                     <div class="card-content white-text">
-                        <span class="card-title black-text">Cadastrar Filme</span>
-                        
+                        <span class="card-title black-text">Editar Informações</span>
+                        <?php foreach ($assistirFilme as $assistir) : ?>
                         <!--input do título -->
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="titulo" type="text" class="validate" name="titulo" required>
+                                <input id="titulo" type="text" class="validate" name="titulo" value="<?= $assistir->titulo ?>" required>
+                                <input type="hidden" name="id" value="<?= $assistir->id?>">
                                 <label for="titulo">Título do Filme</label>
                             </div>
                         </div>
 
                         <!--input da sinopse -->
-                       
-
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="sinopse" class="materialize-textarea" name="sinopse"></textarea>
+                                <textarea id="sinopse" class="materialize-textarea" name="sinopse" value=""><?= $assistir->sinopse ?></textarea>
                                 <label for="textarea1">Sinopse</label>
                             </div>
                         </div>
@@ -47,7 +51,7 @@
                         <div class="row">
                             <div class="input-field col s4">
                                 <input id="nota" type="number" step=".1" min=0 max=10 
-                                    class="validate" required name="nota">
+                                    class="validate" required name="nota" value="<?= $assistir->nota ?>">
                                 <label for="nota">Nota</label>
                             </div>
                         </div>
@@ -59,14 +63,14 @@
                                     <input type="file" name="poster_file">
                             </div>
                             <div class="input-path-wrapper">
-                                    <input class="file-path validate" type="text" name="poster">
+                                    <input class="file-path validate" type="text" name="poster" value="<?= $assistir->poster ?>">
                             </div>
                         </div>
 
                         <!--input do trailer -->
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="sinopse" class="materialize-textarea" name="trailer"></textarea>
+                                <textarea id="sinopse" class="materialize-textarea" name="trailer" value="<?= $assistir->trailer ?>"></textarea>
                                 <label for="textarea1">Link Trailer</label>
                             </div>
                         </div>
@@ -74,15 +78,15 @@
                         <!--input do player -->
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="sinopse" class="materialize-textarea" name="player"></textarea>
+                                <textarea id="sinopse" class="materialize-textarea" name="player" value="<?= $assistir->url ?>"></textarea>
                                 <label for="textarea1">URL Player do Filme</label>
                             </div>
                         </div>
-                     
+                        <?php endforeach ?>
                         <!--Botões de ação-->
                         <div class="card-action">
                             <a class="waves-effect waves-light btn grey" href="/">Cancelar</a>
-                            <button type="submit" class="waves-effect waves-light btn purple">Confirmar</a>
+                            <button type="submit" class="waves-effect waves-light btn purple">Confirmar Edições</a>
                         </div>
                     </div>
                 </div>
