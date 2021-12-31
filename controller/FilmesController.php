@@ -78,7 +78,6 @@ class FilmesController{
 
     }
 
-
     public function fav(){
         $filmesRepository = new FilmesRepositoryPDO();
         return $filmesRepository->listarFavoritos();

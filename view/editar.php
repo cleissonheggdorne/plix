@@ -3,7 +3,7 @@
 $controller = new FilmesController();
 $filmes = $controller->index();
 //$controller = new FilmesController();
-$assistirFilme = $controller-> pageFilme($_GET['id']);
+$infoFilme = $controller-> pageFilme($_GET['id']);
 
 ?>
 <body>
@@ -29,12 +29,12 @@ $assistirFilme = $controller-> pageFilme($_GET['id']);
                 <div class="card">
                     <div class="card-content white-text">
                         <span class="card-title black-text">Editar Informações</span>
-                        <?php foreach ($assistirFilme as $assistir) : ?>
+                        <?php foreach ($infoFilme as $info) : ?>
                         <!--input do título -->
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="titulo" type="text" class="validate" name="titulo" value="<?= $assistir->titulo ?>" required>
-                                <input type="hidden" name="id" value="<?= $assistir->id?>">
+                                <input id="titulo" type="text" class="validate" name="titulo" value="<?= $info->titulo ?>" required>
+                                <input type="hidden" name="id" value="<?= $info->id?>">
                                 <label for="titulo">Título do Filme</label>
                             </div>
                         </div>
@@ -42,7 +42,7 @@ $assistirFilme = $controller-> pageFilme($_GET['id']);
                         <!--input da sinopse -->
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="sinopse" class="materialize-textarea" name="sinopse" value=""><?= $assistir->sinopse ?></textarea>
+                                <textarea id="sinopse" class="materialize-textarea" name="sinopse" value=""><?= $info->sinopse ?></textarea>
                                 <label for="textarea1">Sinopse</label>
                             </div>
                         </div>
@@ -51,7 +51,7 @@ $assistirFilme = $controller-> pageFilme($_GET['id']);
                         <div class="row">
                             <div class="input-field col s4">
                                 <input id="nota" type="number" step=".1" min=0 max=10 
-                                    class="validate" required name="nota" value="<?= $assistir->nota ?>">
+                                    class="validate" required name="nota" value="<?= $info->nota ?>">
                                 <label for="nota">Nota</label>
                             </div>
                         </div>
@@ -63,23 +63,23 @@ $assistirFilme = $controller-> pageFilme($_GET['id']);
                                     <input type="file" name="poster_file">
                             </div>
                             <div class="input-path-wrapper">
-                                    <input class="file-path validate" type="text" name="poster" value="<?= $assistir->poster ?>">
+                                    <input class="file-path validate" type="text" name="poster" value="<?= $info->poster ?>">
                             </div>
                         </div>
 
                         <!--input do trailer -->
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="sinopse" class="materialize-textarea" name="trailer" value="<?= $assistir->trailer ?>"></textarea>
-                                <label for="textarea1">Link Trailer</label>
+                                <input id="trailer" type="text" class="validate" name="trailer" value="<?= $info->trailer ?>" required>
+                                <label for="titulo">ID do Trailer</label>
                             </div>
                         </div>
 
                         <!--input do player -->
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="sinopse" class="materialize-textarea" name="player" value="<?= $assistir->url ?>"></textarea>
-                                <label for="textarea1">URL Player do Filme</label>
+                                <input id="player" type="text" class="validate" name="player" value="<?= $info->url ?>" required>
+                                <label for="titulo">URL do Player</label>
                             </div>
                         </div>
                         <?php endforeach ?>

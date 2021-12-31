@@ -56,8 +56,17 @@ button[name="edit"] {
     right: 30px;
     top: 10px; 
     /*bottom: 0px;*/
- 
+
     
 }
+
+.video-container iframe, .video-container object, .video-container embed, .player{
+    /* position: fixed;  absolute ou fixed */
+    width: 100%;
+    z-index: 20;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+  }
 
 

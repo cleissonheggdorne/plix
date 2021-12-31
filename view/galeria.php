@@ -39,10 +39,10 @@ $filmes = $controller->index();
         <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>"?>
         <?php
             foreach($filmes as $filme): ?>
-            <div class="col s7 m4 l4 xl3"> <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+            <div class="col s12 m6 l4 xl3"> <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
               
                 <div class="card">
-                <a href="/assistir/<?= "?id=".($filme->id) ?>">
+                <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo)."?id=".($filme->id) ?>">
                     <div class="card-image">
                         <img class="activator" src="<?= $filme->poster ?>">
                     </div>
