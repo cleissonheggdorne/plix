@@ -13,6 +13,5 @@ class Mensagem{
                         });
                     </script>";
         }
-        //session_destroy();
     }
 }

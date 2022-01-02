@@ -1,5 +1,9 @@
 <?php include "cabecalho.php" ?>
+<?php
 
+require "./util/mensagem.php";
+
+?>
 
 <body>
 
@@ -89,6 +93,7 @@
             </div>
         </form>
     </div>
+    <?= Mensagem::mostrar();?>
 </body>
 
 </html>

@@ -3,8 +3,36 @@ ini_set('display_errors', 0);
 
 $rota = $_SERVER["REQUEST_URI"];
 $metodo = $_SERVER["REQUEST_METHOD"];
+$logado = false;
 
+//require "./util/mensagem.php";
 require "./controller/FilmesController.php";
+
+//Págia de Login
+if ($rota === "/login") {
+
+    if($metodo == "GET") 
+        require "./view/login.php";
+
+        if (isset($_SESSION['usuario']))
+            if ($_SESSION['usuario'] != "")
+                $logado = true;
+            else
+                $_SESSION['msg'] = "Erro de Acesso!";
+                require "./view/login.php";
+
+    if($metodo == "POST") {
+        $controller = new FilmesController();
+        $result = $controller->validate($_REQUEST);
+        
+        if($result){
+            $logado = true;
+            $_SESSION['msg'] = "Seja Bem Vindo!";
+            //require "./view/galeria.php";
+        }
+    };
+    exit();
+}
 
 //Pagina Galeria
 if ($rota === "/") {

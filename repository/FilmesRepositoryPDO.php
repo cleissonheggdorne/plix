@@ -11,6 +11,23 @@ class FilmesRepositoryPDO{
         $this->conexao = Conexao::criar();
     }
     
+    public function validar($dados):bool{
+        $sql = "SELECT usuario, senha FROM usuario WHERE usuario = :usuario AND senha= :senha";    
+        $stmt = $this->conexao->prepare($sql);
+
+        $stmt->bindValue(':usuario', $dados->usuario, PDO::PARAM_STR); 
+        $stmt->bindValue(':senha', MD5($dados->senha),  PDO::PARAM_STR );
+        $stmt->execute();
+        
+        $consulta = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($stmt->rowCount()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function listarTodos():array{
        
         $filmesLista = array(); //array vazio de filmes
@@ -83,7 +100,7 @@ class FilmesRepositoryPDO{
         $stmt = $this->conexao->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT); 
         if($stmt->execute()){
-            return "ok";;
+            return "ok";
         }else {
             return "erro";
         }

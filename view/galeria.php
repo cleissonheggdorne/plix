@@ -3,7 +3,7 @@
 
 <?php
 
-require "./util/mensagem.php";
+require_once "./util/mensagem.php";
 session_start();
 
 
@@ -44,7 +44,7 @@ $filmes = $controller->index();
                 <div class="card">
                 <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo)."?id=".($filme->id) ?>">
                     <div class="card-image">
-                        <img class="activator" src="<?= $filme->poster ?>">
+                        <img class="activator" src="<?= (str_contains($filme->poster,'imagens/posters'))?  '/'.$filme->poster : $filme->poster //Verifica se é url ou diretorio ?>">
                     </div>
                 </a>
                     <div class="card-content">
