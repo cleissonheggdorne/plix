@@ -12,25 +12,36 @@ require "./controller/FilmesController.php";
 if ($rota === "/login") {
 
     if($metodo == "GET") 
-        require "./view/login.php";
-
-        if (isset($_SESSION['usuario']))
+        
+        if (isset($_SESSION['usuario'])){
             if ($_SESSION['usuario'] != "")
                 $logado = true;
-            else
-                $_SESSION['msg'] = "Erro de Acesso!";
-                require "./view/login.php";
+        }else
+            require "./view/login.php";
+            //header("location: /login");
 
     if($metodo == "POST") {
         $controller = new FilmesController();
         $result = $controller->validate($_REQUEST);
         
-        if($result){
+        if($result){ //false or user
             $logado = true;
-            $_SESSION['msg'] = "Seja Bem Vindo!";
-            //require "./view/galeria.php";
+            $_SESSION['usuario'] = $result;
+            if(isset($_SESSION['usuario']))
+                $_SESSION['msg'] = "Seja Bem Vindo!";
+                header("location: /");
+        }else{
+           // session_destroy;
+            //$_SESSION['msg'] = "Erro de Acesso!";
+            header("location: /login");
         }
     };
+    exit();
+}
+//SAIR
+if ($rota === "/sair") {
+    session_destroy();
+    header("location: /login");
     exit();
 }
 
@@ -42,7 +53,16 @@ if ($rota === "/") {
 
 //Pagina Favoritos
 if ($rota === "/favoritos") {
-    require "./view/favoritos.php";
+    if($metodo == "GET") 
+        
+        if (isset($_SESSION['usuario'])){
+            if ($_SESSION['usuario'] != "")
+                $logado = true;
+                require "./view/favoritos.php";
+        }else
+            $_SESSION['msg'] = "Entre para visualizar seus Favoritos";
+            header("location: /");
+
     exit();
 }
 
@@ -55,22 +75,47 @@ if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
 
 //Pagina Editar
 if (substr($rota, 0, strlen("/editar")) ==="/editar"){
-    if($metodo == "GET") require "./view/editar.php";
-        if($metodo == "POST") {
+    //if($metodo == "GET") require "./view/editar.php";
+    if($metodo == "GET") 
+        
+
+        if (isset($_SESSION['usuario'])){
+            if ($_SESSION['usuario'] != "")
+                $logado = true;
+                require "./view/editar.php";
+
+        }else
+            $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
+            header("location: /");
+            //header("location: /login"); 
+     
+    
+    if($metodo == "POST") {
             $controller = new FilmesController();
             $controller->edit($_REQUEST);
-        };
-        exit();
+    };
+    exit();
 }
 
 //Página Cadastrar
 if ($rota === "/novo") {
-    if($metodo == "GET") require "./view/cadastrar.php";
-        if($metodo == "POST") {
-            $controller = new FilmesController();
-            $controller->save($_REQUEST);
-        };
-        exit();
+    if($metodo == "GET") 
+    
+        if (isset($_SESSION['usuario'])){
+            if ($_SESSION['usuario'] != "")
+                $logado = true;
+                require "./view/cadastrar.php";
+
+        }else
+            $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
+            header("location: /");
+            //header("location: /login"); 
+
+    if($metodo == "POST") {
+        $controller = new FilmesController();
+        $controller->save($_REQUEST);
+    };
+    exit();
 }
 
 //Rota de Favoritar

@@ -1,6 +1,5 @@
 <?php 
 
-
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +12,7 @@
 
 
 <body>
-   <?php if($logado) {?>
+  
     <main class="login">
         <div class="login__container">
             <h1 class="login__title">Login</h1>
@@ -27,7 +26,8 @@
             </form>
         </div>
     </main>
-    <?php }else require "./view/galeria.php" ?>
+   
+  
 </body>
 
 </html>

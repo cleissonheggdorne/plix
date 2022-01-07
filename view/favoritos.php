@@ -20,7 +20,13 @@ $filmes = $controller->fav();
             <ul id="nav-mobile" class="right">
                 <!--Responsividade, esconde a barra quando atlea for média ou pequena-->
                 <li class="active"><a href="/">Galeria</a></li>
-                <li><a href="/novo">Cadastrar</a></li>
+                <?php if ($_SESSION['usuario'] != "") { ?>
+                    <li><a href="/novo">Cadastrar</a></li>
+                    <li><a href="/sair"><?= $_SESSION['usuario'] ?></a></li>
+                    
+                <?php }else {?>
+                    <li><a href="/login">Entrar</a></li>
+                <?php }?>
             </ul>
         </div>
         <div class="nav-header center">
@@ -65,6 +71,12 @@ $filmes = $controller->fav();
     </div>
     </div>
  <?= Mensagem::mostrar();?>
+ <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9897683100163895" crossorigin="anonymous"></script>
+    <!-- Coluna anuncios -->
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9897683100163895" data-ad-slot="8869853545" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 
     <script>
         //DESFavoritar
@@ -109,7 +121,9 @@ $filmes = $controller->fav();
                 });
             });
     </script>
-
+<?php 
+include "rodape.php";
+?>
 </body>
 
-</html>
+

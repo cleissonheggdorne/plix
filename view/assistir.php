@@ -1,4 +1,5 @@
 <?php include "cabecalho.php";
+
 ?>
 
 <?php
@@ -10,7 +11,7 @@ session_start();
 $controller = new FilmesController();
 $filmes = $controller->index();
 //$controller = new FilmesController();
-$infoFilme = $controller-> pageFilme($_GET['id']);
+$infoFilme = $controller->pageFilme($_GET['id']);
 ?>
 
 <body>
@@ -35,107 +36,136 @@ $infoFilme = $controller-> pageFilme($_GET['id']);
             </ul>
         </div>
     </nav>
-    
+
     <div class="section">
         <div class="row">
-        <?php foreach ($infoFilme as $info) : ?>
-             <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
-            <div class="col s12 m12 l4 xl3">
-                
-                <!-- Imagem do pôster-->
-                <div class="card-image">
-                    <img src="<?= (str_contains($info->poster,'imagens/posters'))?  '/'.$info->poster : $info->poster //Verifica se é url ou diretorio ?>">
-                    <!--Aqui tem que entrar a imagem do pôster-->
-                </div>
-            </div>
-            <!--Sinopse -->
-            <div class="col s12 m12 l4 xl3">
-
+            <?php foreach ($infoFilme as $info) : ?>
                 <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
-                <div class="card-content">
-                    <p class="valign-wrapper">
-                        <!--Classe para alinhamento de elementos-->
-                        <i class="material-icons amber-text">star</i><?= $info->nota ?>
-                        <p><span class="card-title"><strong><?= $info->titulo?></strong></span></p>
-                    </p>
+                <div class="col s12 m12 l4 xl3">
 
-                    <span class="card-title"><strong>
-                        <?= $info->sinopse?>
-                    </strong></span> <!--Aqui tem que entrar o link do player-->
-                    <p class="valign-wrapper"><a href="<?= $info->url?>" type="video/mp4"><button class="btn waves-effect purple">Assistir
-                                <i class="material-icons right"><span class="material-icons">play_circle_outline</span></i></a></p>
-                    </button>
+                    <!-- Imagem do pôster-->
+                    <div class="card-image">
+                        <img src="<?= (str_contains($info->poster, 'imagens/posters')) ?  '/' . $info->poster : $info->poster //Verifica se é url ou diretorio 
+                                    ?>">
+                        <!--Aqui tem que entrar a imagem do pôster-->
+                    </div>
                 </div>
-            </div>
+                <!--Sinopse -->
+                <div class="col s12 m12 l4 xl3">
 
-            <div class="col s12 m12 l4 xl5">
-                <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
-                <div class="card">
-                <div class="video-container">
-                    <iframe width="853" height="480" src="//www.youtube.com/embed/<?= $info->trailer?>" frameborder="0" allowfullscreen></iframe>
+                    <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+                    <div class="card-content">
+                        <p class="valign-wrapper">
+                            <!--Classe para alinhamento de elementos-->
+                            <i class="material-icons amber-text">star</i><?= $info->nota ?>
+                        <p><span class="card-title"><strong><?= $info->titulo ?></strong></span></p>
+                        </p>
+
+                        <span class="card-title"><strong>
+                                <?= $info->sinopse ?>
+                            </strong></span>
+                        <p class="valign-wrapper"><a href="<?= $info->url ?>" type="video/mp4"><button class="btn waves-effect purple">Assistir
+                                    <i class="material-icons right"><span class="material-icons">play_circle_outline</span></i></a></p>
+                        </button>
+                    </div>
                 </div>
+
+                <div class="col s12 m12 l4 xl4">
+                    <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+                    <div class="card">
+                        <div class="video-container">
+                            <iframe width="853" height="480" src="//www.youtube.com/embed/<?= $info->trailer ?>" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        <?php endforeach ?>
+                <div class="col s12 m12 l4 xl5">
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9897683100163895" crossorigin="anonymous"></script>
+                    <!-- bloco de anuncios quadrado -->
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9897683100163895" data-ad-slot="6046774307" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+
+            <?php endforeach ?>
         </div>
     </div>
-
     <div class="section">
         <div class="row">
-             <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+            <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
             <div class="col s12 m12 l12 xl12">
-                
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9897683100163895" crossorigin="anonymous"></script>
+                <!-- ads Retangular -->
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9897683100163895" data-ad-slot="6046774307" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="row">
+            <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+            <div class="col s12 m12 l12 xl12">
+
                 <div class="video-container">
-                    <iframe class="player" src="<?= $info->url?>" type="video/mp4" frameborder="0" allowfullscreen></iframe>
+                    <iframe class="player" src="<?= $info->url ?>" type="video/mp4" frameborder="0" allowfullscreen></iframe>
                 </div>
-               
+
             </div>
         </div>
     </div>
 
     <div class="container">
-    <div class="row">
-        <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>"?>
-        <?php
-            foreach($filmes as $filme): ?>
-            <div class="col s12 m6 l4 xl3"> <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
-              
-                <div class="card">
-                <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo)."?id=".($filme->id) ?>">
-                    <div class="card-image">
-                        <img class="activator" src="<?= (str_contains($filme->poster,'imagens/posters'))?  '/'.$filme->poster : $filme->poster //Verifica se é url ou diretorio ?>">
-                    </div>
-                </a>
-                    <div class="card-content">
-                        <div>
-                        <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red"
-                            data-id="<?= $filme->id ?>">
-                            <i class="material-icons"><?= ($filme->favorito)?"favorite":"favorite_border" ?></i><!--ícone Favorito-->
-                        </button> 
-                        </div>
-                        <div>
-                        <a href="/editar/?id=<?= $filme->id ?>"> 
-                        <button style="position: absolute; right: 10px; top: 70px; " class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
-                            <i class="material-icons">edit</i><!--ícone Edit-->
-                        </button></a> 
-                        </div>
-                        <p class="valign-wrapper"> <!--Classe para alinhamento de elementos-->
-                            <i class="material-icons amber-text">star</i><?= $filme->nota ?>
-                        </p>
-                       
-                        <span class="card-title"><strong><?= $filme->titulo?></strong></span>
-                        <!--<button class="waves-effect waves-light btn-small right red accent-2 btn-delete" data-id="<?=$filme->id?>">
+        <div class="row">
+            <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
+            <?php
+            foreach ($filmes as $filme) : ?>
+                <div class="col s12 m6 l4 xl3">
+                    <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+
+                    <div class="card">
+                        <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo) . "?id=" . ($filme->id) ?>">
+                            <div class="card-image">
+                                <img class="activator" src="<?= (str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster //Verifica se é url ou diretorio 
+                                                            ?>">
+                            </div>
+                        </a>
+                        <div class="card-content">
+                            <div>
+                                <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= $filme->id ?>">
+                                    <i class="material-icons"><?= ($filme->favorito) ? "favorite" : "favorite_border" ?></i>
+                                    <!--ícone Favorito-->
+                                </button>
+                            </div>
+                            <div>
+                                <a href="/editar/?id=<?= $filme->id ?>">
+                                    <button style="position: absolute; right: 10px; top: 70px; " class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
+                                        <i class="material-icons">edit</i>
+                                        <!--ícone Edit-->
+                                    </button></a>
+                            </div>
+                            <p class="valign-wrapper">
+                                <!--Classe para alinhamento de elementos-->
+                                <i class="material-icons amber-text">star</i><?= $filme->nota ?>
+                            </p>
+
+                            <span class="card-title"><strong><?= $filme->titulo ?></strong></span>
+                            <!--<button class="waves-effect waves-light btn-small right red accent-2 btn-delete" data-id="<?= $filme->id ?>">
                             <i class="material-icons">delete</i></button>-->
+                        </div>
+
                     </div>
-                  
+
                 </div>
-              
-            </div>
-        <?php endforeach ?>
-    </div>
+            <?php endforeach ?>
+        </div>
     </div>
 
     <?= Mensagem::mostrar(); ?>
+    <?php 
+include "rodape.php";
+?>
 </body>
 
 <script>

@@ -20,7 +20,14 @@ $filmes = $controller->index();
             <ul id="nav-mobile" class="right">
                 <!--Responsividade, esconde a barra quando atlea for média ou pequena-->
                 <li class="active"><a href="/">Galeria</a></li>
-                <li><a href="/novo">Cadastrar</a></li>
+                <?php if ($_SESSION['usuario'] != "") { ?>
+                    <li><a href="/novo">Cadastrar</a></li>
+                    <li><a onclick="sair()" href="#"><?= $_SESSION['usuario'] ?></a></li>
+                    
+                <?php }else {?>
+                    <li><a href="/login">Entrar</a></li>
+                <?php }?>
+               
             </ul>
         </div>
         <div class="nav-header center">
@@ -34,94 +41,123 @@ $filmes = $controller->index();
             </ul>
         </div>
     </nav>
+
     <div class="container">
-    <div class="row">
-        <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>"?>
-        <?php
-            foreach($filmes as $filme): ?>
-            <div class="col s12 m6 l4 xl3"> <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
-              
-                <div class="card">
-                <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo)."?id=".($filme->id) ?>">
-                    <div class="card-image">
-                        <img class="activator" src="<?= (str_contains($filme->poster,'imagens/posters'))?  '/'.$filme->poster : $filme->poster //Verifica se é url ou diretorio ?>">
-                    </div>
-                </a>
-                    <div class="card-content">
-                        <div>
-                        <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red"
-                            data-id="<?= $filme->id ?>">
-                            <i class="material-icons"><?= ($filme->favorito)?"favorite":"favorite_border" ?></i><!--ícone Favorito-->
-                        </button> 
+        <div class="row">
+            <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
+            <?php
+            foreach ($filmes as $filme) : ?>
+                <div class="col s12 m6 l4 xl3">
+                    <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+
+                    <div class="card">
+                        <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo) . "?id=" . ($filme->id) ?>">
+                            <div class="card-image">
+                                <img class="activator" src="<?= (str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster //Verifica se é url ou diretorio 
+                                                            ?>">
+                            </div>
+                        </a>
+                        <div class="card-content">
+                            <div>
+                                <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= $filme->id ?>">
+                                    <i class="material-icons"><?= ($filme->favorito) ? "favorite" : "favorite_border" ?></i>
+                                    <!--ícone Favorito-->
+                                </button>
+                            </div>
+                            <?php if ($_SESSION['usuario'] != "") { ?>
+                                <div>
+                                    <a href="/editar/?id=<?= $filme->id ?>">
+                                        <button style="position: absolute; right: 10px; top: 70px; " class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
+                                            <i class="material-icons">edit</i>
+                                            <!--ícone Edit-->
+                                        </button></a>
+                                </div>
+                            <?php } ?>
+                            <p class="valign-wrapper">
+                                <!--Classe para alinhamento de elementos-->
+                                <i class="material-icons amber-text">star</i><b><?= $filme->nota ?><a href="https://www.themoviedb.org/">  themoviedb</a></b>
+                            </p>
+
+                            <span class="card-title"><strong><?= $filme->titulo ?></strong></span>
                         </div>
-                        <div>
-                        <a href="/editar/?id=<?= $filme->id ?>"> 
-                        <button style="position: absolute; right: 10px; top: 70px; " class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
-                            <i class="material-icons">edit</i><!--ícone Edit-->
-                        </button></a> 
-                        </div>
-                        <p class="valign-wrapper"> <!--Classe para alinhamento de elementos-->
-                            <i class="material-icons amber-text">star</i><?= $filme->nota ?>
-                        </p>
-                       
-                        <span class="card-title"><strong><?= $filme->titulo?></strong></span>
-                        <!--<button class="waves-effect waves-light btn-small right red accent-2 btn-delete" data-id="<?=$filme->id?>">
-                            <i class="material-icons">delete</i></button>-->
+
                     </div>
-                  
+
                 </div>
-              
-            </div>
-        <?php endforeach ?>
+            <?php endforeach ?>
+        </div>
     </div>
-    </div>
- <?= Mensagem::mostrar();?>
+    <?= Mensagem::mostrar(); ?>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9897683100163895" crossorigin="anonymous"></script>
+    <!-- Coluna anuncios -->
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9897683100163895" data-ad-slot="8869853545" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+    <!--Sair do Login -->
+    <script>
+        function sair() {
+            var confirmar = confirm("Deseja Sair?");
+            if(confirmar == true){
+                window.location.href = "/sair";
+            }
+        }
+    </script>
 
     <script>
         //Favoritar
-        document.querySelectorAll(".btn-fav").forEach(btn=>{
-            btn.addEventListener("click", e =>{ //Mudança do texto do html para modificar o ícone
+        document.querySelectorAll(".btn-fav").forEach(btn => {
+            btn.addEventListener("click", e => { //Mudança do texto do html para modificar o ícone
                 const id = btn.getAttribute("data-id") //informação do id do botão clicado
                 fetch(`/favoritar/${id}`) //faz a solicitação delete
-                .then(response => response.json()) //quando tiver a resposta, converto para json
-                .then(response =>{ //após a conversão
-                    if(response.success === "ok"){ //Verifico o atributo success, se OK
-                        if(btn.querySelector("i").innerHTML==="favorite"){ //Faço a troca
-                            btn.querySelector("i").innerHTML="favorite_border" 
-                        }else{
-                           btn.querySelector("i").innerHTML="favorite"
-                        }
-                    }
-                })
-                .catch(error => {
-                    M.toast({html: "Erro ao Favoritar"})
-                })
-            });
-        });
-    </script>
-
-    <script>
-            //Delete
-            document.querySelectorAll(".btn-delete").forEach(btn=>{
-                btn.addEventListener("click", e =>{ 
-                    const id = btn.getAttribute("data-id") //informação do id do botão clicado
-                    const requestConfig = {method:"DELETE", headers: new Headers()}
-                    fetch(`/filmes/${id}`, requestConfig) //faz a solicitação de deletar
                     .then(response => response.json()) //quando tiver a resposta, converto para json
-                    .then(response =>{ //após a conversão
-                        if(response.success === "ok"){ //Verifico o atributo success, se OK
-                            const card = btn.closest(".col") //pegar elemento mais próximo do botão
-                            card.classList.add("fadeOut")//Adiciona classe com efeito de FadeOut
-                            setTimeout(()=>card.remove(), 1000) //executa a função após certo tempo
+                    .then(response => { //após a conversão
+                        if (response.success === "ok") { //Verifico o atributo success, se OK
+                            if (btn.querySelector("i").innerHTML === "favorite") { //Faço a troca
+                                btn.querySelector("i").innerHTML = "favorite_border"
+                            } else {
+                                btn.querySelector("i").innerHTML = "favorite"
+                            }
                         }
                     })
                     .catch(error => {
-                        M.toast({html: "Erro ao Apagar"})
+                        M.toast({
+                            html: "Erro ao Favoritar"
+                        })
                     })
-                });
             });
+        });
+        //Delete
+        document.querySelectorAll(".btn-delete").forEach(btn => {
+            btn.addEventListener("click", e => {
+                const id = btn.getAttribute("data-id") //informação do id do botão clicado
+                const requestConfig = {
+                    method: "DELETE",
+                    headers: new Headers()
+                }
+                fetch(`/filmes/${id}`, requestConfig) //faz a solicitação de deletar
+                    .then(response => response.json()) //quando tiver a resposta, converto para json
+                    .then(response => { //após a conversão
+                        if (response.success === "ok") { //Verifico o atributo success, se OK
+                            const card = btn.closest(".col") //pegar elemento mais próximo do botão
+                            card.classList.add("fadeOut") //Adiciona classe com efeito de FadeOut
+                            setTimeout(() => card.remove(), 1000) //executa a função após certo tempo
+                        }
+                    })
+                    .catch(error => {
+                        M.toast({
+                            html: "Erro ao Apagar"
+                        })
+                    })
+            });
+        });
     </script>
-
+<?php 
+include "rodape.php";
+?>
 </body>
+
 
 </html>

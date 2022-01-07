@@ -14,11 +14,24 @@ $infoFilme = $controller-> pageFilme($_GET['id']);
             <ul id="nav-mobile" class="right">
                 <!--Responsividade, esconde a barra quando atlea for média ou pequena-->
                 <li><a href="/">Galeria</a></li>
-                <li class="active"><a href="cadastrar.php">Cadastrar</a></li>
+                <?php if ($_SESSION['usuario'] != "") { ?>
+                    <li><a href="/novo">Cadastrar</a></li>
+                    <li><a href="/sair"><?= $_SESSION['usuario'] ?></a></li>
+                    
+                <?php }else {?>
+                    <li><a href="/login">Entrar</a></li>
+                <?php }?>
             </ul>
         </div>
         <div class="nav-header center">
             <h1> CLOROCINE</h1>
+        </div>
+        <div class="nav-content">
+            <ul class="tabs tabs-transparent purple darken-1 active">
+                <!--Define a cor da segunda barra de navegação com-->
+                <li class="tab"><a class="active" href="/">TODOS</a></li>
+                <li class="tab"><a class="" href="/favoritos">FAVORITOS</a></li>
+            </ul>
         </div>
     </nav>
     <div class="row">
@@ -104,7 +117,7 @@ $infoFilme = $controller-> pageFilme($_GET['id']);
        
                         
     </div>
-
+    
     <script>
             //Delete
             
@@ -133,7 +146,8 @@ $infoFilme = $controller-> pageFilme($_GET['id']);
             });
     </script>
 
-
+<?php 
+include "rodape.php";
+?>
 </body>
 
-</html>
