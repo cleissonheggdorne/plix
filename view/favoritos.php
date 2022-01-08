@@ -8,7 +8,8 @@ session_start();
 
 
 $controller = new FilmesController();
-$filmes = $controller->fav();
+$filmes = $controller->fav($_SESSION['id_usuario']);
+
 
 ?>
 
@@ -50,13 +51,17 @@ $filmes = $controller->fav();
                 <div class="card">
                     <div class="card-image">
                         <img class="activator" src="<?= $filme->poster ?>">
-                        <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red"
-                            data-id="<?= $filme->id ?>">
-                            <i class="material-icons"><?= ($filme->favorito)?"favorite":"favorite_border" ?></i></button> <!--ícone Favorito-->
+                        <?php 
+                            $dados = ['id_filme'=>$filme->id, 'id_usuario'=> $_SESSION['id_usuario']];
+                        ?>
+                        <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">
+                                    <i class="material-icons"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i>
+                                    <!--ícone Favorito-->
+                                </button>
                     </div>
                     <div class="card-content">
                         <p class="valign-wrapper"> <!--Classe para alinhamento de elementos-->
-                            <i class="material-icons amber-text">star</i><?= $filme->nota ?></p>
+                            <i class="material-icons amber-text">star</i><b><?= $filme->nota ?><a href="https://www.themoviedb.org/">  themoviedb</a></b></p>
                         <span class="card-title"><strong><?= $filme->titulo ?></strong></span>
                     </div>
                         <div class="card-reveal">
@@ -76,6 +81,16 @@ $filmes = $controller->fav();
     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9897683100163895" data-ad-slot="8869853545" data-ad-format="auto" data-full-width-responsive="true"></ins>
     <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+     <!--Sair do Login -->
+     <script>
+        function sair() {
+            var confirmar = confirm("Deseja Sair?");
+            if(confirmar == true){
+                window.location.href = "/sair";
+            }
+        }
     </script>
 
     <script>

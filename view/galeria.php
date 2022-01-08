@@ -10,6 +10,10 @@ session_start();
 $controller = new FilmesController();
 $filmes = $controller->index();
 
+
+//$favoritos = $controller->fav($_SESSION['id_usuario']);
+
+
 ?>
 
 <body>
@@ -58,21 +62,25 @@ $filmes = $controller->index();
                             </div>
                         </a>
                         <div class="card-content">
+
+                        <?php if ($_SESSION['usuario'] != "") { ?>
                             <div>
-                                <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= $filme->id ?>">
-                                    <i class="material-icons"><?= ($filme->favorito) ? "favorite" : "favorite_border" ?></i>
+                                <?php $dados = ['id_filme'=>$filme->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
+                                
+                                <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">
+                                    <i class="material-icons"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i>
                                     <!--ícone Favorito-->
                                 </button>
                             </div>
-                            <?php if ($_SESSION['usuario'] != "") { ?>
-                                <div>
-                                    <a href="/editar/?id=<?= $filme->id ?>">
-                                        <button style="position: absolute; right: 10px; top: 70px; " class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
-                                            <i class="material-icons">edit</i>
-                                            <!--ícone Edit-->
-                                        </button></a>
-                                </div>
-                            <?php } ?>
+                            
+                            <div>
+                                <a href="/editar/?id=<?= $filme->id ?>">
+                                    <button style="position: absolute; right: 10px; top: 70px; " class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
+                                        <i class="material-icons">edit</i>
+                                        <!--ícone Edit-->
+                                    </button></a>
+                            </div>
+                        <?php } ?>
                             <p class="valign-wrapper">
                                 <!--Classe para alinhamento de elementos-->
                                 <i class="material-icons amber-text">star</i><b><?= $filme->nota ?><a href="https://www.themoviedb.org/">  themoviedb</a></b>
@@ -111,6 +119,7 @@ $filmes = $controller->index();
         document.querySelectorAll(".btn-fav").forEach(btn => {
             btn.addEventListener("click", e => { //Mudança do texto do html para modificar o ícone
                 const id = btn.getAttribute("data-id") //informação do id do botão clicado
+                console.log(id);
                 fetch(`/favoritar/${id}`) //faz a solicitação delete
                     .then(response => response.json()) //quando tiver a resposta, converto para json
                     .then(response => { //após a conversão
@@ -121,6 +130,7 @@ $filmes = $controller->index();
                                 btn.querySelector("i").innerHTML = "favorite"
                             }
                         }
+                        //console.log(response.success);
                     })
                     .catch(error => {
                         M.toast({

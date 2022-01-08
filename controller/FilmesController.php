@@ -14,8 +14,10 @@ class FilmesController{
         $filmesRepository = new FilmesRepositoryPDO();
         $dados = (object) $request;
 
-        if($filmesRepository->validar($dados)){  //Executa a instrução//
-            return $dados->usuario;
+        $dadosUsuario = $filmesRepository->validar($dados);
+        var_dump($dadosUsuario);
+        if($dadosUsuario != false){  //Executa a instrução verificando se TRUE//
+            return $dadosUsuario;
         }else
             return false;
            
@@ -55,14 +57,31 @@ class FilmesController{
 
     }
 
-    public function favorite(int $id){
+    public function favorite(String $ids){ //id usuário e id filme
+        $id_filme_usuario = unserialize(urldecode($ids));
+
         $filmesRepository = new FilmesRepositoryPDO();
-        $result = ['success' => $filmesRepository->favoritar($id)];
-        header('Content-type: application/json');
-        echo json_encode($result);
-        return $result;
+        
+        if(!$filmesRepository->verificaFavorito($id_filme_usuario)){
+            $result = ['success' => $filmesRepository->favoritar($id_filme_usuario)];
+            header('Content-type: application/json');
+            echo json_encode($result);
+            return $result;
+        }else{
+            $result = ['success' => $filmesRepository->desFavoritar($id_filme_usuario)];
+            header('Content-type: application/json');
+            echo json_encode($result);
+            return $result;
+        }
     }
 
+    //Verifica Favorito na galeria
+    public function controlVerificaFavorito(Array $ids):bool{ //id usuário e id filme
+        $filmesRepository = new FilmesRepositoryPDO();
+        return $filmesRepository->verificaFavorito($ids);
+    }
+
+    //Deletar
     public function delete(int $id){
         $filmesRepository = new FilmesRepositoryPDO();
         $result = ['success' => $filmesRepository->delete($id)];
@@ -71,6 +90,7 @@ class FilmesController{
         echo json_encode($result);
     }
 
+    //Editar
     public function edit($request){
        
         $filmesRepository = new FilmesRepositoryPDO();
@@ -90,10 +110,10 @@ class FilmesController{
         header("Location: /"); //Redirecionamento de página
 
     }
-
-    public function fav(){
+    //Lista favoritos por usuário
+    public function fav(int $idUsuario){
         $filmesRepository = new FilmesRepositoryPDO();
-        return $filmesRepository->listarFavoritos();
+        return $filmesRepository->listarFavoritos($idUsuario);
     }
 
     public function pageFilme($id){

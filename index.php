@@ -26,7 +26,8 @@ if ($rota === "/login") {
         
         if($result){ //false or user
             $logado = true;
-            $_SESSION['usuario'] = $result;
+            $_SESSION['usuario'] = $result['usuario'];
+            $_SESSION['id_usuario'] = $result['id'];
             if(isset($_SESSION['usuario']))
                 $_SESSION['msg'] = "Seja Bem Vindo!";
                 header("location: /");
