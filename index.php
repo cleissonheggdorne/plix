@@ -5,40 +5,59 @@ $rota = $_SERVER["REQUEST_URI"];
 $metodo = $_SERVER["REQUEST_METHOD"];
 $logado = false;
 
-//require "./util/mensagem.php";
 require "./controller/FilmesController.php";
 
 //Págia de Login
 if ($rota === "/login") {
-
+    $controller = new FilmesController();
     if($metodo == "GET") 
         
         if (isset($_SESSION['usuario'])){
-            if ($_SESSION['usuario'] != "")
+            if ($controller->verificaUsuario($_SESSION['usuario'])){
                 $logado = true;
+                header("location: /");
+            }
         }else
             require "./view/login.php";
-            //header("location: /login");
 
     if($metodo == "POST") {
-        $controller = new FilmesController();
         $result = $controller->validate($_REQUEST);
         
         if($result){ //false or user
             $logado = true;
             $_SESSION['usuario'] = $result['usuario'];
             $_SESSION['id_usuario'] = $result['id'];
+            $_SESSION['admin'] = $result['admin'];
             if(isset($_SESSION['usuario']))
-                $_SESSION['msg'] = "Seja Bem Vindo!";
-                header("location: /");
+                if($controller->verificaUsuario($_SESSION['usuario']))
+                    $_SESSION['msg'] = "Seja Bem Vindo!";
+                    header("location: /");
         }else{
-           // session_destroy;
-            //$_SESSION['msg'] = "Erro de Acesso!";
+            $_SESSION['msg'] = "Email ou Senha Incorretos";
             header("location: /login");
         }
     };
     exit();
 }
+
+//Cadastro de Usuário
+if ($rota === "/cadastro-de-usuario") {
+    $controller = new FilmesController();
+    if($metodo == "GET") 
+        require "./view/cadastrarUsuario.php";
+    
+    if($metodo == "POST") 
+        if(!(is_bool($controller->verificaDadosUsuario($_REQUEST)))){
+            $_SESSION['usuarioCadastro'] = $controller->verificaDadosUsuario($_REQUEST);
+            $_SESSION['msg'] = 'Senhas não correspondem';
+            header("location: /cadastro-de-usuario");
+            
+        }else {
+            $controller->saveUser($_REQUEST);
+        }
+    exit();
+}
+
 //SAIR
 if ($rota === "/sair") {
     session_destroy();
@@ -54,10 +73,11 @@ if ($rota === "/") {
 
 //Pagina Favoritos
 if ($rota === "/favoritos") {
+    $controller = new FilmesController();
     if($metodo == "GET") 
         
         if (isset($_SESSION['usuario'])){
-            if ($_SESSION['usuario'] != "")
+            if($controller->verificaUsuario($_SESSION['usuario']))
                 $logado = true;
                 require "./view/favoritos.php";
         }else
@@ -70,26 +90,22 @@ if ($rota === "/favoritos") {
 //Pagina individual de cada filme
 if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
     require "./view/assistir.php";
-    //pageFilme($_GET["id"]);
     exit();
 }
 
 //Pagina Editar
 if (substr($rota, 0, strlen("/editar")) ==="/editar"){
-    //if($metodo == "GET") require "./view/editar.php";
+    $controller = new FilmesController();
     if($metodo == "GET") 
         
-
         if (isset($_SESSION['usuario'])){
-            if ($_SESSION['usuario'] != "")
+            if($controller->verificaUsuario($_SESSION['usuario']))
                 $logado = true;
                 require "./view/editar.php";
 
         }else
             $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
             header("location: /");
-            //header("location: /login"); 
-     
     
     if($metodo == "POST") {
             $controller = new FilmesController();
@@ -100,20 +116,19 @@ if (substr($rota, 0, strlen("/editar")) ==="/editar"){
 
 //Página Cadastrar
 if ($rota === "/novo") {
+    $controller = new FilmesController();
     if($metodo == "GET") 
     
         if (isset($_SESSION['usuario'])){
-            if ($_SESSION['usuario'] != "")
+            if($controller->verificaUsuario($_SESSION['usuario']))
                 $logado = true;
                 require "./view/cadastrar.php";
 
         }else
             $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
             header("location: /");
-            //header("location: /login"); 
 
     if($metodo == "POST") {
-        $controller = new FilmesController();
         $controller->save($_REQUEST);
     };
     exit();

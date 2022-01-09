@@ -28,6 +28,22 @@ class FilmesRepositoryPDO{
         }
     }
 
+    public function salvarUsuario($usuario):bool{
+        
+        $sql = "INSERT INTO usuario(id, usuario, senha, admin, data_cadastro)
+        VALUES(:id, :usuario, :senha1, :admin, :data_cadastro)";    
+        $stmt = $this->conexao->prepare($sql);
+
+        $stmt->bindValue(':id', 0, PDO::PARAM_INT);
+        $stmt->bindValue(':usuario', $usuario->usuario, PDO::PARAM_STR); 
+        $stmt->bindValue(':senha1', MD5($usuario->senha1),  PDO::PARAM_STR );
+        $stmt->bindValue(':admin', false,  PDO::PARAM_BOOL);
+        $stmt->bindValue(':data_cadastro', date('Y/m/d'),  PDO::PARAM_STR);
+        
+        return $stmt->execute();
+
+    }
+
     public function listarTodos():array{
        
         $filmesLista = array(); //array vazio de filmes
@@ -42,7 +58,7 @@ class FilmesRepositoryPDO{
         }
         return $filmesLista;
     }
-
+    //salvar filme
     public function salvar($filme):bool{
         
         $sql = "INSERT INTO filmes(titulo, poster, sinopse, nota, trailer, url)

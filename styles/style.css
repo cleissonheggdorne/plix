@@ -1,0 +1,141 @@
+body{
+    background-color: #e5e5e5;
+}
+
+.nav-extended{
+    background-image: url("https://img.alicdn.com/bao/uploaded/TB1b.vPSXXXXXXVaXXXXXXXXXXX.jpg");
+    background-size: cover;
+    background-blend-mode: soft-light;
+}
+
+nav ul li.active, .tab a.active {
+    border-bottom: solid 2px #fff;
+    background-color: transparent;
+}
+
+.nav-header h1{
+    text-shadow:  2px 2px 15px #000;
+}
+
+.fadeOut{
+    opacity:0;
+    transition: 1s;
+}
+
+.card .card-content {
+    padding: 15px;
+    border-radius: 0 0 2px 2px;
+   
+}
+
+.section{
+    height: 500px;
+    position: relative;
+}
+
+.img-apresentacao{
+    opacity: 70%;
+    position: center;
+    object-fit: contain;
+}
+
+.btn-flat{
+   align-content: center;
+}
+
+.btn-floating.halfway-fab {
+    position: absolute;
+    right: 10px;
+    top: 10px; 
+    /*bottom: 0px;*/
+}
+
+button[name="edit"] {
+
+    position: absolute;
+    right: 30px;
+    top: 10px; 
+    /*bottom: 0px;*/
+
+    
+}
+
+.video-container iframe, .video-container object, .video-container embed, .player{
+    /* position: fixed;  absolute ou fixed */
+    width: 100%;
+    z-index: 20;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+  }
+
+
+/*tela de login*/
+
+:root {
+    --input-linear:linear-gradient(120deg,#8E24AA, #CE93D8);
+    --button-linear: linear-gradient(120deg, #8E24AA, #CE93D8, #8E24AA);
+    --white:#fff;
+    --black:#303030;
+    --gray:#929292;
+    --light-gray:#cfcfcf;
+}
+.main{
+    background-image: url("https://img.alicdn.com/bao/uploaded/TB1b.vPSXXXXXXVaXXXXXXXXXXX.jpg");
+    background-size: cover;
+    background-blend-mode: soft-light;
+    font-family: sans-serif;
+}
+
+.input__usuario, .input__senha{
+    color: #fff;
+}
+.login{
+    margin-top: 100px;
+}
+
+.login .card{
+    background: rgba(0, 0, 0, .6);
+    border-radius: 8px;
+}
+
+.title-form{
+    border-top-left-radius:8px;
+    border-top-right-radius: 8px;
+}
+
+.login label{
+    font-size: 16px;
+    color:#ccc;
+}
+
+.login input {
+    font-size: 16px !important;
+}
+
+.btn-login{
+    border-radius: 08px;
+    padding: 0px 40px;
+    background-color: purple;
+    width: 100%;
+}
+.login-button:hover{
+    padding: 0px, 40px;
+}
+
+.esqueci-senha{
+    padding-top: 12px;
+    color: #8e24aa;
+}
+
+.card-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-form-2{
+    min-height: 500px;
+    min-width: 300px;
+}
+

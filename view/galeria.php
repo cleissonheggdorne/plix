@@ -63,8 +63,8 @@ $filmes = $controller->index();
                         </a>
                         <div class="card-content">
 
-                        <?php if ($_SESSION['usuario'] != "") { ?>
-                            <div>
+                        <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
+                            <div>  <!-- Verificação de usuário logado e permissão de admin 1=true e 0=false-->
                                 <?php $dados = ['id_filme'=>$filme->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
                                 
                                 <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">

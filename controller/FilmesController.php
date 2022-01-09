@@ -24,6 +24,35 @@ class FilmesController{
 
     }
 
+    public function saveUser($request){
+        $filmesRepository = new FilmesRepositoryPDO();
+        $usuario= (object) $request;
+
+        if($filmesRepository->salvarUsuario($usuario))  //Executa a instrução//
+            $_SESSION["msg"] = "Usuário cadastrado com sucesso";
+        else
+            $_SESSION["msg"] = "Erro ao cadastrar usuário";
+
+        header("Location: /login"); //Redirecionamento de página
+    }
+
+    public function verificaUsuario($user){
+        if($_SESSION['usuario'] != "")
+            return true;
+        else
+            return false; 
+    }
+
+    public function verificaDadosUsuario($request){
+        $filmesRepository = new FilmesRepositoryPDO();
+        $dados= (object) $request;
+
+        if($dados->senha1 == $dados->senha2)
+            return true;
+        else
+            return $dados->usuario; 
+    }
+
     public function save($request){
        
         $filmesRepository = new FilmesRepositoryPDO();
