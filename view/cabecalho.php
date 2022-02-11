@@ -11,7 +11,9 @@
 
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!--Importa ícones do material design-->
-    <link rel="stylesheet" href="./styles/style.css">
-    <title>Clorocine</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Importa ícones do material design-->
+
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Plix</title>
 </head>

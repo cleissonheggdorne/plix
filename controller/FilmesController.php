@@ -5,9 +5,14 @@ REQUIRE "./repository/FilmesRepositoryPDO.php";
 REQUIRE "./model/Filme.php";
 
 class FilmesController{
-    public function index(){
+    public function index($itens, $inicio){
         $filmesRepository = new FilmesRepositoryPDO();
-        return $filmesRepository->listarTodos();
+        return $filmesRepository->listarTodos($itens, $inicio);
+    }
+
+    public function busca($busca){
+        $filmesRepository = new FilmesRepositoryPDO();
+        return $filmesRepository->listarBusca($busca);
     }
 
     public function validate($request){
@@ -47,10 +52,14 @@ class FilmesController{
         $filmesRepository = new FilmesRepositoryPDO();
         $dados= (object) $request;
 
-        if($dados->senha1 == $dados->senha2)
+        if($filmesRepository->verificaCadastroExistente($dados->usuario))
+            return $dados->usuario;
+
+        if($dados->senha1 == $dados->senha2){
             return true;
-        else
-            return $dados->usuario; 
+        }else{
+            return $dados->senha1;
+        }
     }
 
     public function save($request){

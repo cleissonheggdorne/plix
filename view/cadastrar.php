@@ -33,10 +33,11 @@ require "./util/mensagem.php";
             </ul>
         </div>
     </nav>
-    <div class="row">
-
+    
+        <div class="row">
+        <div class="col s12 m6 l4 offset-l4 offset-m3">
         <form method="POST" enctype="multipart/form-data"> <!--Início Form-->
-            <div class="col s12 m6 l4 offset-l4 offset-m3">
+           
                 <!--Card contendo os inputs -->
                 <div class="card">
                     <div class="card-content white-text">
@@ -95,7 +96,17 @@ require "./util/mensagem.php";
                                 <label for="textarea1">URL Player do Filme</label>
                             </div>
                         </div>
-                     
+                        <span class="card-title black-text">Importação de Arquivo CSV (Deixar em branco caso vá adicionar individualmente)</span>
+                        <div class="file-field input-field">
+                            <div class="btn purple lighten-2 black-text">
+                                    <span>Arquivo CSV</spam>
+                                    <input type="file" name="cvv_file">
+                            </div>
+                            <div class="input-path-wrapper">
+                                    <input class="file-path validate" type="text" name="csv">
+                            </div>
+                        </div>
+
                         <!--Botões de ação-->
                         <div class="card-action">
                             <a class="waves-effect waves-light btn grey" href="/">Cancelar</a>
@@ -106,6 +117,7 @@ require "./util/mensagem.php";
             </div>
         </form>
     </div>
+
     <?= Mensagem::mostrar();?>
 
     <?php 

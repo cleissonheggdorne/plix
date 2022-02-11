@@ -1,11 +1,22 @@
 <?php
 ini_set('display_errors', 0);
+require "./controller/FilmesController.php";
 
 $rota = $_SERVER["REQUEST_URI"];
 $metodo = $_SERVER["REQUEST_METHOD"];
+$busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING);
 $logado = false;
 
-require "./controller/FilmesController.php";
+//Receber o número da página
+$pagina_atual= filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
+ 
+ $pagina = (!empty($pagina_atual))? $pagina_atual : 1;
+
+ //Setar a quantidade de itens
+ $qtd_itens_pag = 30;
+
+// //Calcular o início visualização
+ $inicio = ($qtd_itens_pag*$pagina)-$qtd_itens_pag;
 
 //Págia de Login
 if ($rota === "/login") {
@@ -47,14 +58,23 @@ if ($rota === "/cadastro-de-usuario") {
         require "./view/cadastrarUsuario.php";
     
     if($metodo == "POST") 
-        if(!(is_bool($controller->verificaDadosUsuario($_REQUEST)))){
-            $_SESSION['usuarioCadastro'] = $controller->verificaDadosUsuario($_REQUEST);
+        $usuario= (object) $_REQUEST;
+    
+        if(is_bool($controller->verificaDadosUsuario($_REQUEST))){
+            if($controller->verificaDadosUsuario($_REQUEST))
+                $controller->saveUser($_REQUEST);
+               
+        }else if($controller->verificaDadosUsuario($_REQUEST) == $usuario->senha1){
+            $_SESSION['usuarioCadastro'] = $usuario->usuario;
             $_SESSION['msg'] = 'Senhas não correspondem';
             header("location: /cadastro-de-usuario");
-            
-        }else {
-            $controller->saveUser($_REQUEST);
+           
+        }else if($controller->verificaDadosUsuario($_REQUEST) == $usuario->usuario){
+            $_SESSION['usuarioCadastro'] = $usuario->usuario;
+            $_SESSION['msg'] = 'Usuário já cadastrado';
+            header("location: /cadastro-de-usuario");
         }
+        
     exit();
 }
 
@@ -66,10 +86,26 @@ if ($rota === "/sair") {
 }
 
 //Pagina Galeria
-if ($rota === "/") {
+if ($rota === "/" or substr($rota, 0, strlen("/inicio")) ==="/inicio" && (substr($rota, 0, strlen("/inicio?busca")) != "/inicio?busca")) {
+    $controller = new FilmesController();
+    $_SESSION['filmes'] = $controller->index($qtd_itens_pag, $inicio);
     require "./view/galeria.php";
+    unset($_SESSION['busca']);
     exit();
+    
 }
+
+//Busca
+if($metodo == "GET" && substr($rota, 0, strlen("/inicio?busca")) === "/inicio?busca") {
+    if(isset($busca))
+        $_SESSION['busca']=$busca;
+        $filmesController = new FilmesController();
+        $buscaRetornada = $filmesController->busca($busca);
+        $_SESSION['buscaRetornada'] = $buscaRetornada;
+        header("location: /inicio");
+        exit();
+}
+
 
 //Pagina Favoritos
 if ($rota === "/favoritos") {
@@ -133,6 +169,9 @@ if ($rota === "/novo") {
     };
     exit();
 }
+//Importar arquivo
+ if ($rota === "/importar-arquivo")
+    require "./util/importaDados.php";
 
 //Rota de Favoritar
 if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){
@@ -150,6 +189,8 @@ if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
     }
     exit();
 }
+
+
 
 
 require "./view/404.php";

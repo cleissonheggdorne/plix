@@ -28,6 +28,22 @@ class FilmesRepositoryPDO{
         }
     }
 
+    public function verificaCadastroExistente($usuario){
+        $sql = "SELECT usuario FROM usuario WHERE usuario = :usuario";    
+        $stmt = $this->conexao->prepare($sql);
+
+        $stmt->bindValue(':usuario', $usuario, PDO::PARAM_STR); 
+        $stmt->execute();
+        
+        $dadosRetornados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($stmt->rowCount()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function salvarUsuario($usuario):bool{
         
         $sql = "INSERT INTO usuario(id, usuario, senha, admin, data_cadastro)
@@ -44,13 +60,22 @@ class FilmesRepositoryPDO{
 
     }
 
-    public function listarTodos():array{
+    public function listarTodos($itens, $inicio):array{
        
         $filmesLista = array(); //array vazio de filmes
-        $sql = "SELECT * FROM filmes";
+        $todos = "SELECT * FROM filmes"; //Todos os registros
+        $sql = "SELECT * FROM filmes LIMIT $inicio, $itens"; //Registros pela quantidade de itens da página
+
         //Retorna conjunto de dados
         $filmes = $this->conexao->query($sql);
-        
+        $numRegistros = $this->conexao->query($todos); //Todos Registros
+        $nr = $numRegistros->rowCount(); //Retorna número de Registros
+
+        $num_paginas= $nr/$itens; //Número de páginas
+        $num_paginas=intVal(ceil($num_paginas)); //Arredonda para cima e transforma em inteiro
+
+        array_push($filmesLista, $num_paginas); //Adiciona a primeira posição do array de filmes para ser passadp para a Galeria
+      
         if(!$filmes) return false;
 
         while($filme = $filmes->fetchObject()){ //fetchobject cria objeto utilizando os mesos nomes no banco de dados
@@ -58,6 +83,22 @@ class FilmesRepositoryPDO{
         }
         return $filmesLista;
     }
+    //Listar Busca
+    public function listarBusca($busca):array{
+       $busca = str_replace(" ", "%", $busca);
+        $filmesLista = array(); //array vazio de filmes
+        $sql = "SELECT * FROM filmes WHERE titulo LIKE '%$busca%'";
+        
+        $filmes = $this->conexao->query($sql);
+        
+        if(!$filmes) return false;
+
+        while($filme = $filmes->fetchObject()){ //fetchobject cria objeto utilizando os mesmos nomes no banco de dados
+            array_push($filmesLista, $filme); //lista filmes 1 a 1
+        }
+        return $filmesLista;
+    }
+
     //salvar filme
     public function salvar($filme):bool{
         
@@ -165,11 +206,7 @@ class FilmesRepositoryPDO{
        
         $favoritosLista = array(); //array vazio de filmes favoritos
         $sql = "SELECT * FROM filmes WHERE id IN (SELECT id_filme FROM filme_favorito WHERE id_usuario = $idUsuario)";
-        //Retorna conjunto de dados
-       // $stmt = $this->conexao->prepare($sql);
-       // $stmt->bindValue(':id_usuario', $idUsuario, PDO::PARAM_INT); 
-       // $stmt->execute();
-        //$filmes = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         $filmes = $this->conexao->query($sql);
         
         if(!$filmes) return false;
@@ -195,5 +232,21 @@ class FilmesRepositoryPDO{
        
         return $filmeArray;
         
+    }
+
+    public function importarArquivo($file){
+
+        ini_set('mas_execution_time', 0); //Arquivo executará até finalzar tempo de processamento
+        $sql = "LOAD DATA INFILE '$file' INTO TABLE filmes
+        FIELDS TERMINATED BY ';'
+        LINES TERMINATED BY '\n'
+        IGNORE 1 ROWS";
+
+        if($this->conexao->query($sql))
+             return true;
+        else
+            return false; 
+
+
     }
 }

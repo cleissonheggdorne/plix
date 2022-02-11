@@ -21,10 +21,11 @@ $filmes = $controller->fav($_SESSION['id_usuario']);
             <ul id="nav-mobile" class="right">
                 <!--Responsividade, esconde a barra quando atlea for média ou pequena-->
                 <li class="active"><a href="/">Galeria</a></li>
-                <?php if ($_SESSION['usuario'] != "") { ?>
-                    <li><a href="/novo">Cadastrar</a></li>
-                    <li><a href="/sair"><?= $_SESSION['usuario'] ?></a></li>
-                    
+                <?php if ($_SESSION['usuario'] != "") { ?> <!--Verifica se usuario existe-->
+                    <li><a onclick="sair()" href="#"><?= $_SESSION['usuario'] ?></a></li>
+                        <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?> <!--Verifica se admin-->
+                            <li><a href="/novo">Cadastrar</a></li>
+                        <?php } ?>
                 <?php }else {?>
                     <li><a href="/login">Entrar</a></li>
                 <?php }?>
@@ -42,39 +43,59 @@ $filmes = $controller->fav($_SESSION['id_usuario']);
         </div>
     </nav>
     <div class="container">
-    <div class="row">
-        <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Nenhum filme favoritado</p>"?>
-        <?php
-            foreach($filmes as $filme): ?>
-            <div class="col s7 m4 l4 xl3"> <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
-               
-                <div class="card">
-                    <div class="card-image">
-                        <img class="activator" src="<?= $filme->poster ?>">
-                        <?php 
-                            $dados = ['id_filme'=>$filme->id, 'id_usuario'=> $_SESSION['id_usuario']];
-                        ?>
-                        <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">
+        <div class="row">
+            <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
+            <?php
+            foreach ($filmes as $filme) : ?> <!--Percorre filme a filme-->
+               <?php if (!is_int($filme)) :?> <!--Verificação de Número de páginas-->
+                    
+                
+                <div class="col s12 m6 l4 xl3" id="card-filme">
+                    <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+
+                    <!--Posters -->
+                    <div class="card">
+                        <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo) . "?id=" . ($filme->id) ?>">
+                            <div class="card-image" id="card-imagem">
+                                <img class="activator" src="<?= (str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster //Verifica se é url ou diretorio 
+                                                            ?>">
+                        
+                                <!-- Título  -->
+                                <span class="card-title" id="titulo-content"><?= $filme->titulo?></span>
+                                
+                            </div>
+                        </a>
+
+                        <?php if ($_SESSION['usuario'] != "") { ?>
+                            <div>  <!-- Verificação de usuário logado e permissão de admin 1=true e 0=false-->
+                                <?php $dados = ['id_filme'=>$filme->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
+                                <!--Botão favorito -->
+                                <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">
                                     <i class="material-icons"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i>
                                     <!--ícone Favorito-->
                                 </button>
+                            </div>
+                        <?php } ?>
+                            
+                            <div class="btn-nota halfway-fab valign-wrapper">
+                                    <!--Classe para alinhamento de elementos-->
+                                    <i class="imdb material-icons black-text" id="nota">star</i><b><?= $filme->nota ?><a href="https://www.imdb.com/">  IMDB</a></b>
+                            </div>
+           
                     </div>
-                    <div class="card-content">
-                        <p class="valign-wrapper"> <!--Classe para alinhamento de elementos-->
-                            <i class="material-icons amber-text">star</i><b><?= $filme->nota ?><a href="https://www.themoviedb.org/">  themoviedb</a></b></p>
-                        <span class="card-title"><strong><?= $filme->titulo ?></strong></span>
-                    </div>
-                        <div class="card-reveal">
-                            <span class="card-title grey-text text-darken-4"><?= $filme->titulo ?><i class="material-icons right">close</i></span>
-                        <p><?= substr($filme->sinopse, 0, 500)."..." ?></p>
-                        <button class="waves-effect waves-light btn-small right red accent-2 btn-delete" data-id="<?=$filme->id?>">
-                            <i class="material-icons">delete</i></button>
-                    </div>
+
                 </div>
-            </div>
-        <?php endforeach ?>
+                <?php endif ?>
+            <?php endforeach ?>
+        </div>
     </div>
-    </div>
+    <ul class="pagination container">
+        <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+            <?php for($cont = 1; $cont<$num_paginas; $cont++) : ?>
+                <li class="waves-effect" active><a class="active" href="/inicio?pagina=<?=$cont?>"><?=$cont?></a></li>
+            <?php endfor?>
+        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+    </ul>
  <?= Mensagem::mostrar();?>
  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9897683100163895" crossorigin="anonymous"></script>
     <!-- Coluna anuncios -->

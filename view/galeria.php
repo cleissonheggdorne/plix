@@ -6,109 +6,162 @@
 require_once "./util/mensagem.php";
 session_start();
 
-
-$controller = new FilmesController();
-$filmes = $controller->index();
-
-
-//$favoritos = $controller->fav($_SESSION['id_usuario']);
-
+if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
+    $filmes = $_SESSION['filmes'];
+    $num_paginas = $filmes[0];
+} else {
+    $filmes = $_SESSION['buscaRetornada'];
+}
 
 ?>
 
-<body>
-
-    <nav class="nav-extended purple lighten-3">
+<body class="purple darken-1">
+    <nav class="nav-extended purple darken-2">
         <!-- Define a cor da NavBar compreendendo o título central-->
         <div class="nav-wrapper">
-            <ul id="nav-mobile" class="right">
-                <!--Responsividade, esconde a barra quando atlea for média ou pequena-->
-                <li class="active"><a href="/">Galeria</a></li>
-                <?php if ($_SESSION['usuario'] != "") { ?>
-                    <li><a href="/novo">Cadastrar</a></li>
-                    <li><a onclick="sair()" href="#"><?= $_SESSION['usuario'] ?></a></li>
-                    
-                <?php }else {?>
-                    <li><a href="/login">Entrar</a></li>
-                <?php }?>
+            <a href="/inicio" class="brand-logo left">PLIX</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <!--Responsividade, esconde a barra quando a tela for média ou pequena-->
+                <li class="active"><a href="/inicio">Galeria</a></li>
                
-            </ul>
-        </div>
-        <div class="nav-header center">
-            <h1>CLOROCINE</h1>
-        </div>
-        <div class="nav-content">
-            <ul class="tabs tabs-transparent purple darken-1 active">
-                <!--Define a cor da segunda barra de navegação com-->
-                <li class="tab"><a class="active" href="/">TODOS</a></li>
-                <li class="tab"><a class="" href="/favoritos">FAVORITOS</a></li>
+                <?php 
+                if ($_SESSION['usuario'] != "") { ?>
+                    <!--Verifica se usuario existe-->
+                    
+                  <a class='dropdown-trigger btn transparent' href='#' data-target='dropdown1'><?= $_SESSION['usuario'] ?></a>
+                    <ul id='dropdown1' class='dropdown-content'>
+                        <li><a onclick="sair()" href="#">Sair</a></li>
+                        <li><a href="/favoritos">Favoritos</a></li>
+                        <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
+                            <li><a href="/novo">Cadastrar Mídia</a></li>
+                        <?php }?>
+                    </ul>  
+
+                <?php } else { ?>
+                    <li><a href="/login">Entrar</a></li>
+                <?php } ?>
             </ul>
         </div>
     </nav>
+    
+    <div class="carousel">
+        <a class="carousel-item hoverable" href="#one!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
+        <a class="carousel-item" href="#two!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
+        <a class="carousel-item" href="#three!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
+        <a class="carousel-item" href="#four!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
+        <a class="carousel-item" href="#five!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
+    </div>       
 
-    <div class="container">
-        <div class="row">
-            <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
-            <?php
-            foreach ($filmes as $filme) : ?>
-                <div class="col s12 m6 l4 xl3">
+    <!-- <div class="fundo-parallax">
+        <div class="parallax-container">
+            <div class="parallax"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"></div>
+        </div>
+    </div> -->
+
+    <div class="fundo-pesquisa purple darken-1">
+        <nav class="busca container purple lighten-3">
+            <div class="nav-wrapper center">
+                <form method="GET">
+                    <div class="input-field  hoverable">
+                        <input id="search" name="busca" type="search" required value="<?= $_SESSION['busca'] ?>">
+                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                        <i class="material-icons">close</i>
+                    </div>
+                </form>
+            </div>
+        </nav>
+    </div>
+
+    <!-- <div class="container"> -->
+    <div class="row poster-filmes">
+        <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
+        <?php $c = 0;
+        foreach ($filmes as $filme) : ?>
+            <!--Percorre filme a filme-->
+            <?php if (!is_int($filme)) : ?>
+                <!--Verifica filme ou int-->
+                <?php $c++ ?>
+
+                <div class="col s12 m6 l1 x1" id="card-filme">
                     <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
 
-                    <div class="card">
+                    <!--Posters -->
+                    <div class="card hoverable">
                         <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo) . "?id=" . ($filme->id) ?>">
-                            <div class="card-image">
+                            <div class="card-image" id="card-imagem">
                                 <img class="activator" src="<?= (str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster //Verifica se é url ou diretorio 
                                                             ?>">
+                                <!-- Título  -->
+                                <span class="card-title" id="titulo-content"><?= $filme->titulo ?></span>
                             </div>
                         </a>
-                        <div class="card-content">
-
-                        <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
-                            <div>  <!-- Verificação de usuário logado e permissão de admin 1=true e 0=false-->
-                                <?php $dados = ['id_filme'=>$filme->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
-                                
+                        <!-- Verifica usuário -->
+                        <?php if ($_SESSION['usuario'] != "") { ?>
+                            <div>
+                                <!-- Verificação de usuário logado-->
+                                <?php $dados = ['id_filme' => $filme->id, 'id_usuario' => $_SESSION['id_usuario']]; ?>
+                                <!--Botão favorito -->
                                 <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">
                                     <i class="material-icons"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i>
                                     <!--ícone Favorito-->
                                 </button>
                             </div>
-                            
+                        <?php }
+                        if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
+                            <!--Botão Editar -->
                             <div>
                                 <a href="/editar/?id=<?= $filme->id ?>">
-                                    <button style="position: absolute; right: 10px; top: 70px; " class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
+                                    <button class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
                                         <i class="material-icons">edit</i>
                                         <!--ícone Edit-->
                                     </button></a>
                             </div>
                         <?php } ?>
-                            <p class="valign-wrapper">
-                                <!--Classe para alinhamento de elementos-->
-                                <i class="material-icons amber-text">star</i><b><?= $filme->nota ?><a href="https://www.themoviedb.org/">  themoviedb</a></b>
-                            </p>
-
-                            <span class="card-title"><strong><?= $filme->titulo ?></strong></span>
+                        <div class="btn-nota halfway-fab valign-wrapper">
+                            <!--Classe para alinhamento de elementos-->
+                            <i class="imdb material-icons black-text" id="nota">star</i><b><?= $filme->nota ?><a href="https://www.imdb.com/"> IMDB</a></b>
                         </div>
-
                     </div>
-
                 </div>
-            <?php endforeach ?>
-        </div>
-    </div>
-    <?= Mensagem::mostrar(); ?>
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9897683100163895" crossorigin="anonymous"></script>
-    <!-- Coluna anuncios -->
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9897683100163895" data-ad-slot="8869853545" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+                <?php if ($c == 14) : ?>
+                    <div class="parallax-meio parallax-container">
+                        <div class="parallax"><img src="https://www.themoviedb.org/t/p/original/3dUByTea97X3XzznN8ZPFX9c7J7.jpg"></div>
+                    </div>
+                    <?php $c = 0; ?>
+                <?php endif ?>
+
+            <?php endif ?>
+        <?php endforeach ?>
+    </div>
+   
+    <ul class="pagination container center">
+        <?php if ($_GET['pagina'] >= 2) { ?>
+            <li class="waves-effect"><a href="/inicio?pagina=<?= $_GET['pagina']-1 ?>"><i class="material-icons white-text">chevron_left</i></a></li>
+        <?php }else{ ?>
+            <li class="disable"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+        <?php } ?>
+        <?php for ($cont = 1; $cont <= $num_paginas; $cont++) : ?>
+            <?php if ($_SERVER["REQUEST_URI"] == "/inicio?pagina=$cont") {?>
+                <li class="waves-effect active purple lighten-3"><a href="/inicio?pagina=<?= $cont ?>"><?= $cont ?></a></li>
+            <?php }else{ ?>
+                <li class="waves-effect"><a href="/inicio?pagina=<?= $cont ?>"><?= $cont ?></a></li>
+            <?php }?>
+        <?php endfor ?>
+        <?php if ($_GET['pagina'] < $num_paginas) { ?>
+            <li class="waves-effect"><a href="/inicio?pagina=<?= $_GET['pagina']+1 ?>"><i class="material-icons white-text">chevron_right</i></a></li>
+        <?php }else{ ?>
+            <li class="waves-effect"><a href="#"><i class="material-icons white-text">chevron_right</i></a></li>
+        <?php } ?>
+    </ul>
+    <?= Mensagem::mostrar(); ?>
 
     <!--Sair do Login -->
     <script>
         function sair() {
             var confirmar = confirm("Deseja Sair?");
-            if(confirmar == true){
+            if (confirmar == true) {
                 window.location.href = "/sair";
             }
         }
@@ -164,10 +217,40 @@ $filmes = $controller->index();
             });
         });
     </script>
-<?php 
-include "rodape.php";
-?>
-</body>
 
+    <script>
+        //esconder itens do menu
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+        });
+
+        //Carrosel de imagens
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.carousel');
+            var instances = M.Carousel.init(elems, {
+
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.parallax');
+            var instances = M.Parallax.init(elems);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.dropdown-trigger');
+            var instances = M.Dropdown.init(elems, {
+                coverTrigger:false,
+                hover:true
+            });
+        });
+
+    </script>
+
+    <?php
+    include "rodape.php";
+    ?>
+</body>
 
 </html>
