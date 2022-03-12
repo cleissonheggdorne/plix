@@ -1,7 +1,13 @@
 body{
     background-color: #e5e5e5;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column
 }
 
+main {
+    flex: 1 0 auto;
+}
 /* Fundo da pesquisa */
 .fundo-pesquisa{
     background-image: url("https://img.alicdn.com/bao/uploaded/TB1b.vPSXXXXXXVaXXXXXXXXXXX.jpg");
@@ -291,5 +297,15 @@ a:hover{
 .card-form-2{
     min-height: 500px;
     min-width: 300px;
+}
+/* Página de Controle */
+
+.input-cadastro-filme{
+    margin-bottom: 0px;
+}
+
+
+.hiddendiv common{
+	z-index: 9999;
 }
 

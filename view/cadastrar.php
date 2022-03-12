@@ -7,32 +7,49 @@ require "./util/mensagem.php";
 
 <body>
 
-    <nav class="nav-extended purple lighten-3">
+<nav class="nav-extended purple darken-2">
         <!-- Define a cor da NavBar compreendendo o título central-->
         <div class="nav-wrapper">
-            <ul id="nav-mobile" class="right">
-                <!--Responsividade, esconde a barra quando atlea for média ou pequena-->
-                <li><a href="/">Galeria</a></li>
-                <?php if ($_SESSION['usuario'] != "") { ?>
-                    <li class="active"><a href="/novo">Cadastrar</a></li>
-                    <li><a href="/sair"><?= $_SESSION['usuario'] ?></a></li>
+            <a href="/inicio" class="brand-logo left">PLIX</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <!--Responsividade, esconde a barra quando a tela for média ou pequena-->
+                <li class="active"><a href="/inicio">Galeria</a></li>
+               
+                <?php 
+                if ($_SESSION['usuario'] != "") { ?>
+                    <!--Verifica se usuario existe-->
                     
-                <?php }else {?>
+                  <a class='dropdown-trigger btn transparent' href='#' data-target='dropdown1'><?= $_SESSION['usuario'] ?></a>
+                    <ul id='dropdown1' class='dropdown-content'>
+                        <li><a onclick="sair()" href="#">Sair</a></li>
+                        <li><a href="/favoritos">Favoritos</a></li>
+                        <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
+                            <li><a href="/novo">Cadastrar Mídia</a></li>
+                        <?php }?>
+                    </ul>  
+
+                <?php } else { ?>
                     <li><a href="/login">Entrar</a></li>
-                <?php }?>
-            </ul>
-        </div>
-        <div class="nav-header center">
-            <h1> CLOROCINE</h1>
-        </div>
-        <div class="nav-content">
-            <ul class="tabs tabs-transparent purple darken-1 active">
-                <!--Define a cor da segunda barra de navegação com-->
-                <li class="tab"><a class="active" href="/">TODOS</a></li>
-                <li class="tab"><a class="" href="/favoritos">FAVORITOS</a></li>
+                <?php } ?>
             </ul>
         </div>
     </nav>
+
+    <?php 
+    if ($_SESSION['usuario'] != "") { ?>
+        <!--Verifica se usuario existe-->
+        <ul class="sidenav purple lighten-3" id="mobile-demo">
+            <li class="center purple darken-2"><?= $_SESSION['usuario'] ?></li>
+            <li><a href="/favoritos">Favoritos</a></li>
+            <li><a href="/syscontrol">Controle</a></li>
+            <li><a onclick="sair()" href="#">Sair</a></li>
+        </ul>
+    <?php } else { ?>
+        <ul class="sidenav purple lighten-3" id="mobile-demo">
+            <li class="purple darken-2"><a href="/login">Entrar</a></li>
+        </ul>
+    <?php } ?>
     
         <div class="row">
         <div class="col s12 m6 l4 offset-l4 offset-m3">

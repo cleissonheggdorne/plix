@@ -6,13 +6,13 @@
 
 require "./util/mensagem.php";
 session_start();
-
+unset($_SESSION['busca']);
 
 $controller = new FilmesController();
 $filmes = $controller->index(20, 0);
 
-$infoFilme = $controller->pageFilme($_GET['id']);
-
+$dados = $controller->buscaInfoFilme(['pag_assistir'=>$_GET['id']]);
+$infoFilme = $dados['dados'];
 ?>
 
 <body>
@@ -59,11 +59,11 @@ $infoFilme = $controller->pageFilme($_GET['id']);
             </div>
         </nav>
     </div>
-    
-    <div class="section apresentacao-filme purple darken-2" style="background-image: url('https://www.themoviedb.org/t/p/original/nvxrQQspxmSblCYDtvDAbVFX8Jt.jpg')">
+    <?php foreach ($infoFilme as $info) : ?>
+    <div class="section apresentacao-filme purple darken-2" style="background-image: url('<?= $info->img_wide_1?>')">
         
         <div class="divider transparent"></div>
-                <?php foreach ($infoFilme as $info) : ?>
+               
                     <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
                         <div class="row container valign-wrapper">
                             <div class="col s12 m6 l6 xl6">
@@ -128,8 +128,8 @@ $infoFilme = $controller->pageFilme($_GET['id']);
             </div>
         </div>
     </div>
+
     <!-- Sessão Player -->
-    
         <!-- <div class="divider"></div> -->
         <div class="section apresentacao-player purple darken-2">
             <div class="row">

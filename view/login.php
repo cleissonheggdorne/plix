@@ -1,8 +1,9 @@
 <?php 
+session_start();
 include "cabecalho.php";
 
 require_once "./util/mensagem.php";
-session_start();
+//secho $_SESSION['msg'];
 ?>
 
 <body class="purple darken-1 main">

@@ -4,8 +4,9 @@ require "./controller/FilmesController.php";
 
 $rota = $_SERVER["REQUEST_URI"];
 $metodo = $_SERVER["REQUEST_METHOD"];
-$busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING);
+//$busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING); //Busca Galeria
 $logado = false;
+$logadoAdmin = false;
 
 //Receber o número da página
 $pagina_atual= filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
@@ -18,11 +19,18 @@ $pagina_atual= filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
 // //Calcular o início visualização
  $inicio = ($qtd_itens_pag*$pagina)-$qtd_itens_pag;
 
-//Págia de Login
-if ($rota === "/login") {
+//Página de Login
+if (substr($rota, 0, strlen("/login"))  === "/login") {
     $controller = new FilmesController();
     if($metodo == "GET") 
-        
+        $chave = filter_input(INPUT_GET, "chave", FILTER_SANITIZE_STRING);    
+        if(isset($chave)){
+            unset($_SESSION['usuario']);
+            //$_SESSION['msg'] = "{$chave}";
+            //header("location: /");
+            $controller = new FilmesController();
+            $controller->confirmaEmail($chave);
+        }
         if (isset($_SESSION['usuario'])){
             if ($controller->verificaUsuario($_SESSION['usuario'])){
                 $logado = true;
@@ -63,12 +71,12 @@ if ($rota === "/cadastro-de-usuario") {
         if(is_bool($controller->verificaDadosUsuario($_REQUEST))){
             if($controller->verificaDadosUsuario($_REQUEST))
                 $controller->saveUser($_REQUEST);
-               
+        //Verifica Senhas se correspondem
         }else if($controller->verificaDadosUsuario($_REQUEST) == $usuario->senha1){
             $_SESSION['usuarioCadastro'] = $usuario->usuario;
             $_SESSION['msg'] = 'Senhas não correspondem';
             header("location: /cadastro-de-usuario");
-           
+        //Verifica se usuário já não existe (email)
         }else if($controller->verificaDadosUsuario($_REQUEST) == $usuario->usuario){
             $_SESSION['usuarioCadastro'] = $usuario->usuario;
             $_SESSION['msg'] = 'Usuário já cadastrado';
@@ -86,7 +94,9 @@ if ($rota === "/sair") {
 }
 
 //Pagina Galeria
-if ($rota === "/" or substr($rota, 0, strlen("/inicio")) ==="/inicio" && (substr($rota, 0, strlen("/inicio?busca")) != "/inicio?busca")) {
+if ($rota === "/" 
+    or substr($rota, 0, strlen("/inicio")) ==="/inicio" && 
+    (substr($rota, 0, strlen("/inicio?busca")) != "/inicio?busca")) {
     $controller = new FilmesController();
     $_SESSION['filmes'] = $controller->index($qtd_itens_pag, $inicio);
     require "./view/galeria.php";
@@ -95,17 +105,92 @@ if ($rota === "/" or substr($rota, 0, strlen("/inicio")) ==="/inicio" && (substr
     
 }
 
+//Pagina de Controle
+if ((substr($rota, 0, strlen("/syscontrol")) === "/syscontrol") && $_SESSION['admin'] == true) {
+    $controller = new FilmesController();
+    $_SESSION['filmes'] = $controller->index($qtd_itens_pag, $inicio);
+    if($metodo == "GET")
+        if(substr($rota, 0, strlen("/syscontrol?busca")) === "/syscontrol?busca"){
+            $busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING);
+            $_SESSION['busca']=$busca;
+            if(isset($busca))
+                $filmesController = new FilmesController();
+                $_SESSION['buscaRetornada'] = $titulosRetornados = $filmesController->busca(['titulo'=>$busca], 'syscontrol');
+                header("location: /syscontrol");
+                exit();
+
+        //Busca filmes pelo título
+        }else if(substr($rota, 0, strlen("/syscontrol?titulo-para-buscar")) === "/syscontrol?titulo-para-buscar"){
+            $buscaTitulo = filter_input(INPUT_GET, 'titulo-para-buscar', FILTER_SANITIZE_STRING); //Busca para salvar filme
+            $tipo = filter_input(INPUT_GET, 'tipo', FILTER_SANITIZE_STRING); //Busca para salvar filme
+            if(isset($buscaTitulo))
+                $filmesController = new FilmesController();
+                $filmesController->ondeBuscar($buscaTitulo, $tipo);
+
+        //Busca filme específico pelo id do TMDB
+        }else if(substr($rota, 0, strlen("/syscontrol?id-filme-tmdb")) === "/syscontrol?id-filme-tmdb"){
+                $idTmdb = filter_input(INPUT_GET, 'id-filme-tmdb', FILTER_SANITIZE_STRING); //Id do filme no TMDB
+                $filmesController = new FilmesController();
+                $filmesController->getApiRegisterFilm($idTmdb);
+
+        //Busca para adicionar ao slide
+        }else if(substr($rota, 0, strlen("/syscontrol?id-para-destaque")) === "/syscontrol?id-para-destaque"){
+            
+            $idNovo = filter_input(INPUT_GET, 'id-para-destaque', FILTER_SANITIZE_STRING); 
+            $idAnterior = filter_input(INPUT_GET, 'id-anterior', FILTER_SANITIZE_STRING);
+           
+            $filmesController = new FilmesController();
+            $filmesController->atualizaDestaques($idNovo, $idAnterior);
+        }else if(substr($rota, 0, strlen("/syscontrol?destaque-busca=")) === "/syscontrol?destaque-busca="){
+            
+            $busca = filter_input(INPUT_GET, 'destaque-busca', FILTER_SANITIZE_STRING);
+            $tipo = filter_input(INPUT_GET, 'tipo', FILTER_SANITIZE_STRING);
+            
+            $filmesController = new FilmesController();
+            $filmesController->busca(['titulo'=>$busca], $tipo);
+        }else if(substr($rota, 0, strlen("/syscontrol?id-para-editar")) === "/syscontrol?id-para-editar"){
+            
+            $idFilme = filter_input(INPUT_GET, 'id-para-editar', FILTER_SANITIZE_STRING);
+            $tipo = filter_input(INPUT_GET, 'tipo', FILTER_SANITIZE_STRING);
+            
+            $filmesController = new FilmesController();
+            $infoFilme = $filmesController-> buscaInfoFilme([$tipo=>$idFilme]);
+          
+
+        }else{
+            require "./view/controle.php";
+            //busca no modal de seleção de destaques
+        }
+    else if ($metodo == "POST") {
+        $filmesController = new FilmesController();
+        //if(isset($_POST["filme_id"])){
+            $dadosFilme = (array) $_REQUEST;
+            (array_key_exists('id', $dadosFilme))? $filmesController->edit($_REQUEST) : $filmesController->save($_REQUEST);
+        //}else{
+            
+            
+       // }
+        
+    };
+
+    exit();
+}
+
 //Busca
-if($metodo == "GET" && substr($rota, 0, strlen("/inicio?busca")) === "/inicio?busca") {
+if($metodo == "GET" && (substr($rota, 0, strlen("/inicio?busca")) === "/inicio?busca")
+     or substr($rota, 0, strlen("/?busca")) === "/?busca") {
     if(isset($busca))
+        $busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING); //Busca Galeria
         $_SESSION['busca']=$busca;
         $filmesController = new FilmesController();
-        $buscaRetornada = $filmesController->busca($busca);
+    
+        $buscaRetornada = $filmesController->busca(['titulo'=>$busca], "galeria");
         $_SESSION['buscaRetornada'] = $buscaRetornada;
         header("location: /inicio");
         exit();
+    
+        
 }
-
 
 //Pagina Favoritos
 if ($rota === "/favoritos") {
@@ -125,17 +210,21 @@ if ($rota === "/favoritos") {
 
 //Pagina individual de cada filme
 if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
-    require "./view/assistir.php";
-    exit();
-}
+    $busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING);
+    if(isset($busca) && $busca != "")
+        header("location: /?busca=$busca");
+    else
+        require "./view/assistir.php";
+     exit();
+ }
 
 //Pagina Editar
-if (substr($rota, 0, strlen("/editar")) ==="/editar"){
+if (substr($rota, 0, strlen("/editar")) ==="/editar" && $_SESSION['admin'] == true){
     $controller = new FilmesController();
     if($metodo == "GET") 
         
         if (isset($_SESSION['usuario'])){
-            if($controller->verificaUsuario($_SESSION['usuario']))
+            if($controller->verificaUsuario($_SESSION['usuario']) && $_SESSION['admin']=== true)
                 $logado = true;
                 require "./view/editar.php";
 
@@ -150,28 +239,28 @@ if (substr($rota, 0, strlen("/editar")) ==="/editar"){
     exit();
 }
 
-//Página Cadastrar
-if ($rota === "/novo") {
-    $controller = new FilmesController();
-    if($metodo == "GET") 
+// //Página Cadastrar
+// if ($rota === "/syscontrol") {
+//     $controller = new FilmesController();
+//     // if($metodo == "GET") 
     
-        if (isset($_SESSION['usuario'])){
-            if($controller->verificaUsuario($_SESSION['usuario']))
-                $logado = true;
-                require "./view/cadastrar.php";
+//     //     if (isset($_SESSION['usuario'])){
+//     //         if ($_SESSION['admin'] == true)
+//     //             $logado = true;
+//     //             require "./view/cadastrar.php";
 
-        }else
-            $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
-            header("location: /");
-
-    if($metodo == "POST") {
-        $controller->save($_REQUEST);
-    };
-    exit();
-}
-//Importar arquivo
- if ($rota === "/importar-arquivo")
-    require "./util/importaDados.php";
+//     //     }else
+//     //         $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
+//     //         header("location: /");
+//     echo "teste";
+//     if($metodo == "POST") {
+//         $controller->save($_REQUEST);
+//     };
+//     exit();
+// }
+// //Importar arquivo
+//  if ($rota === "/importar-arquivo")
+//     require "./util/importaDados.php";
 
 //Rota de Favoritar
 if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){
@@ -190,9 +279,11 @@ if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
     exit();
 }
 
-
-
-
+//Atualiza com API
+// if($rota === "/atualizaBack"){
+//     require "./util/api.php";
+//     exit;
+// }
 require "./view/404.php";
 
 ?>

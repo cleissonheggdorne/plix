@@ -44,10 +44,10 @@ class FilmesRepositoryPDO{
         }
     }
 
-    public function salvarUsuario($usuario):bool{
+    public function salvarUsuario($usuario):array{
         
-        $sql = "INSERT INTO usuario(id, usuario, senha, admin, data_cadastro)
-        VALUES(:id, :usuario, :senha1, :admin, :data_cadastro)";    
+        $sql = "INSERT INTO usuario(id, usuario, senha, admin, data_cadastro, chave)
+        VALUES(:id, :usuario, :senha1, :admin, :data_cadastro,:chave)";    
         $stmt = $this->conexao->prepare($sql);
 
         $stmt->bindValue(':id', 0, PDO::PARAM_INT);
@@ -55,8 +55,26 @@ class FilmesRepositoryPDO{
         $stmt->bindValue(':senha1', MD5($usuario->senha1),  PDO::PARAM_STR );
         $stmt->bindValue(':admin', false,  PDO::PARAM_BOOL);
         $stmt->bindValue(':data_cadastro', date('Y/m/d'),  PDO::PARAM_STR);
+        //!!! Important chave pode já existir. Ideal utilizar função recursiva para verificação antes de inserir
+        $chave = password_hash($usuario->usuario.date("Y/m/d H:i:s"), PASSWORD_DEFAULT);
+        $stmt->bindValue(':chave', $chave, PDO::PARAM_STR);
         
-        return $stmt->execute();
+        return ['pass'=>$stmt->execute(), 'chave'=>$chave];
+
+    }
+
+    public function confirmaEmail($chave):array{
+        $sql = "SELECT id FROM usuario WHERE chave = :chave LIMIT 1";
+        $stmt = $this->conexao->prepare($sql);
+        
+        $stmt->bindValue(':chave', $chave, PDO::PARAM_STR);
+      
+        $stmt->execute();
+        if($stmt->rowCount() != 0 ){
+            
+            return ['msg'=>'Chave encontrada'];
+        }
+        //return ['pass'=>$stmt->execute(), 'chave'=>$chave];
 
     }
 
@@ -85,35 +103,69 @@ class FilmesRepositoryPDO{
     }
     //Listar Busca
     public function listarBusca($busca):array{
-       $busca = str_replace(" ", "%", $busca);
         $filmesLista = array(); //array vazio de filmes
-        $sql = "SELECT * FROM filmes WHERE titulo LIKE '%$busca%'";
-        
-        $filmes = $this->conexao->query($sql);
-        
-        if(!$filmes) return false;
-
-        while($filme = $filmes->fetchObject()){ //fetchobject cria objeto utilizando os mesmos nomes no banco de dados
+        if(array_key_exists('titulo', $busca)){ //Verifica se busca veio pelo título
+            $busca = str_replace(" ", "%", $busca['titulo']);
+            $sql = "SELECT * FROM filmes WHERE titulo LIKE '%$busca%'"; 
+            $retornoExecucaoConsultaFilmes = $this->conexao->query($sql);
+            
+            if(!$retornoExecucaoConsultaFilmes) return false;
+        }else if(array_key_exists('id', $busca)){//Verifica se busca veio pelo id
+            $id = intval($busca['id']);
+            $sql = "SELECT * FROM filmes WHERE id = $id"; 
+            $retornoExecucaoConsultaFilmes = $this->conexao->query($sql);
+            if(!$retornoExecucaoConsultaFilmes) return false;
+        }
+        while($filme = $retornoExecucaoConsultaFilmes->fetchObject()){ //fetchobject cria objeto utilizando os mesmos nomes no banco de dados
             array_push($filmesLista, $filme); //lista filmes 1 a 1
         }
         return $filmesLista;
     }
 
+    //Listar na tela de seleção de destaques
+    public function buscaResultadosDestaque($titulo):array{
+        //$retornoBusca = array(); //array vazio de filmes
+        $busca = str_replace(" ", "%", $titulo);
+        $sql = "SELECT id, titulo, poster FROM filmes WHERE titulo LIKE '%$busca%'"; 
+        $informacoes = $this->conexao->query($sql);
+        //$stmt = $this->conexao->prepare($sql);
+        while($dado = $informacoes->fetchObject()){
+            $retorno[] = [
+                'id' => $dado->id,
+                'titulo' => $dado->titulo,
+                'poster' => "https://www.themoviedb.org/t/p/original/".$dado->poster
+              ];
+        }
+        $retornoBusca = ['dados'=> $retorno];
+        return $retornoBusca;
+    }
+
     //salvar filme
     public function salvar($filme):bool{
         
-        $sql = "INSERT INTO filmes(titulo, poster, sinopse, nota, trailer, url)
-        VALUES(:titulo, :poster, :sinopse, :nota, :trailer, :url)";    
+        $sql = "INSERT INTO filmes(id, titulo, poster, sinopse, nota, trailer, url, genero_id, img_wide_1, img_wide_2, img_wide_3)
+        VALUES(:id,:titulo, :poster, :sinopse, :nota, :trailer, :url, :genero_id, :back_1, :back_2, :back_3)";    
         $stmt = $this->conexao->prepare($sql);
 
+        $stmt->bindValue(':id', 0, PDO::PARAM_INT);
         $stmt->bindValue(':titulo', $filme->titulo, PDO::PARAM_STR); 
         $stmt->bindValue(':poster', $filme->poster,  PDO::PARAM_STR );
         $stmt->bindValue(':sinopse', $filme->sinopse,  PDO::PARAM_STR);
         $stmt->bindValue(':nota', $filme->nota,  PDO::PARAM_STR);
         $stmt->bindValue(':trailer', $filme->trailer,  PDO::PARAM_STR);
         $stmt->bindValue(':url', $filme->player,  PDO::PARAM_STR);
-        
-        return $stmt->execute();
+        $stmt->bindValue(':genero_id', null, PDO::PARAM_INT);
+        $stmt->bindValue(':back_1', $filme->back_1,  PDO::PARAM_STR);
+        $stmt->bindValue(':back_2', $filme->back_2,  PDO::PARAM_STR);
+        $stmt->bindValue(':back_3', $filme->back_3,  PDO::PARAM_STR);
+         try{
+            $stmt->execute();
+            return true;
+         }catch(PDOException $e){
+            echo $e->getMessage();
+            return false;
+         }
+         //return $stmt->execute();
 
     }
 
@@ -202,6 +254,43 @@ class FilmesRepositoryPDO{
         }
     }
 
+    public function buscaDestaques(){
+        $sql = "SELECT * FROM busca_destaque";
+        $stmt = $this->conexao->prepare($sql);
+        $retornoDestaques = array();
+        try{
+            $destaques = $this->conexao->query($sql);
+            //$stmt->execute();
+         }catch(PDOException $e){
+            return $e->getMessage();
+         }
+         while($dest = $destaques->fetchObject()){
+            array_push($retornoDestaques, $dest);
+         }
+        //  if($stmt->rowCount())
+        //     $retornoDestaques = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $retornoDestaques;
+
+    }
+
+    // Atualiza Destaque (Slides) na página inicial
+    public function atualizaDestaques($idNovo, $idAntigo){
+         $sql1 = "UPDATE filmes set destaque = true WHERE id = :idNovo";
+         $sql2 = "UPDATE filmes set destaque = false WHERE id = :idAntigo";    
+        
+         $stmt = $this->conexao->prepare($sql1);
+         $stmt2 = $this->conexao->prepare($sql2);
+        
+         $stmt->bindValue(':idNovo', $idNovo, PDO::PARAM_INT); 
+         $stmt2->bindValue(':idAntigo', $idAntigo, PDO::PARAM_INT); 
+    
+         if($stmt->execute() && $stmt2->execute()){
+            return "ok";
+         }else {
+             return "erro";
+         }
+    }
+
     public function listarFavoritos(int $idUsuario):array{
        
         $favoritosLista = array(); //array vazio de filmes favoritos
@@ -230,7 +319,7 @@ class FilmesRepositoryPDO{
             array_push($filmeArray, $film); //lista filmes 1 a 1
         }
        
-        return $filmeArray;
+        return ['dados'=>$filmeArray];
         
     }
 
@@ -246,7 +335,29 @@ class FilmesRepositoryPDO{
              return true;
         else
             return false; 
+    }
 
+    public function retornaTitulos(){
+        $sql = "SELECT titulo from filmes";
+        $titulosArray = array();
+        $titulos = $this->conexao->query($sql);
 
+        while($titulo = $titulos->fetchObject()){ //fetchobject cria objeto utilizando os mesmos nomes no banco de dados
+            array_push($titulosArray, $titulo); //lista filmes 1 a 1
+        }
+       
+        return $titulosArray;
+    }
+
+    public function atualizaInfoBack($backs){
+        
+        foreach($backs as $key => $titulo){
+            $sql = "UPDATE filmes set img_wide_1 = :back WHERE titulo = :titulo";
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindValue(':back', $key, PDO::PARAM_STR);
+            $stmt->bindValue(':titulo', $titulo, PDO::PARAM_STR);
+            $stmt->execute();
+            
+        }
     }
 }

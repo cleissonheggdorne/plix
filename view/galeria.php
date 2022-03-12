@@ -5,6 +5,8 @@
 
 require_once "./util/mensagem.php";
 session_start();
+$filmesController = new FilmesController();
+$destaques = $filmesController->destaques();
 
 if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
     $filmes = $_SESSION['filmes'];
@@ -16,6 +18,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
 ?>
 
 <body class="purple darken-1">
+    <main>
     <nav class="nav-extended purple darken-2">
         <!-- Define a cor da NavBar compreendendo o título central-->
         <div class="nav-wrapper">
@@ -34,7 +37,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                         <li><a onclick="sair()" href="#">Sair</a></li>
                         <li><a href="/favoritos">Favoritos</a></li>
                         <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
-                            <li><a href="/novo">Cadastrar Mídia</a></li>
+                            <li><a href="/syscontrol">Painel de Controle</a></li>
                         <?php }?>
                     </ul>  
 
@@ -44,20 +47,29 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             </ul>
         </div>
     </nav>
+    <?php 
+    if ($_SESSION['usuario'] != "") { ?>
+        <!--Verifica se usuario existe-->
+        <ul class="sidenav  purple lighten-3" id="mobile-demo">
+        <li class="center purple darken-2"><?= $_SESSION['usuario'] ?></li>
+            <li><a href="/favoritos">Favoritos</a></li>
+            <li><a href="/syscontrol">Controle</a></li>
+            <li><a onclick="sair()" href="#">Sair</a></li>
+        </ul>
+    <?php } else { ?>
+        <ul class="sidenav purple lighten-3" id="mobile-demo">
+            <li class="purple darken-2"><a href="/login">Entrar</a></li>
+        </ul>
+    <?php } ?>
     
     <div class="carousel">
-        <a class="carousel-item hoverable" href="#one!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
-        <a class="carousel-item" href="#two!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
-        <a class="carousel-item" href="#three!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
-        <a class="carousel-item" href="#four!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
-        <a class="carousel-item" href="#five!"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"><h3>Título</h3></a>
+        <?php foreach($destaques as $destaque) :?>
+            <a class="carousel-item hoverable" href="/assistir/<?= str_replace(' ', '-', $destaque->titulo) . "?id=" . ($destaque->id) ?>">
+                <img src="<?= (str_contains($destaque->img_wide_1, 'imagens/posters')) ?  '/' . $destaque->img_wide_1 : $destaque->img_wide_1 ?>">
+                <h3><?= $destaque->titulo ?></h3>
+            </a>
+        <?php endforeach ?>
     </div>       
-
-    <!-- <div class="fundo-parallax">
-        <div class="parallax-container">
-            <div class="parallax"><img src="https://www.themoviedb.org/t/p/original/qBLEWvJNVsehJkEJqIigPsWyBse.jpg"></div>
-        </div>
-    </div> -->
 
     <div class="fundo-pesquisa purple darken-1">
         <nav class="busca container purple lighten-3">
@@ -156,23 +168,16 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
         <?php } ?>
     </ul>
     <?= Mensagem::mostrar(); ?>
+    </main>
 
-    <!--Sair do Login -->
-    <script>
-        function sair() {
-            var confirmar = confirm("Deseja Sair?");
-            if (confirmar == true) {
-                window.location.href = "/sair";
-            }
-        }
-    </script>
+    
 
-    <script>
+     <script>
         //Favoritar
         document.querySelectorAll(".btn-fav").forEach(btn => {
             btn.addEventListener("click", e => { //Mudança do texto do html para modificar o ícone
                 const id = btn.getAttribute("data-id") //informação do id do botão clicado
-                console.log(id);
+                //console.log(id);
                 fetch(`/favoritar/${id}`) //faz a solicitação delete
                     .then(response => response.json()) //quando tiver a resposta, converto para json
                     .then(response => { //após a conversão
@@ -183,7 +188,6 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                                 btn.querySelector("i").innerHTML = "favorite"
                             }
                         }
-                        //console.log(response.success);
                     })
                     .catch(error => {
                         M.toast({
@@ -216,37 +220,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                     })
             });
         });
-    </script>
-
-    <script>
-        //esconder itens do menu
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.sidenav');
-            var instances = M.Sidenav.init(elems);
-        });
-
-        //Carrosel de imagens
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.carousel');
-            var instances = M.Carousel.init(elems, {
-
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.parallax');
-            var instances = M.Parallax.init(elems);
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.dropdown-trigger');
-            var instances = M.Dropdown.init(elems, {
-                coverTrigger:false,
-                hover:true
-            });
-        });
-
-    </script>
+    </script> 
 
     <?php
     include "rodape.php";
