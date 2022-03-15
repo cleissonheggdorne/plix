@@ -4,7 +4,6 @@ require "./controller/FilmesController.php";
 
 $rota = $_SERVER["REQUEST_URI"];
 $metodo = $_SERVER["REQUEST_METHOD"];
-//$busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING); //Busca Galeria
 $logado = false;
 $logadoAdmin = false;
 
@@ -23,19 +22,17 @@ $pagina_atual= filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
 if (substr($rota, 0, strlen("/login"))  === "/login") {
     $controller = new FilmesController();
     if($metodo == "GET") 
-        $chave = filter_input(INPUT_GET, "chave", FILTER_SANITIZE_STRING);    
-        if(isset($chave)){
-            unset($_SESSION['usuario']);
-            //$_SESSION['msg'] = "{$chave}";
-            //header("location: /");
-            $controller = new FilmesController();
-            $controller->confirmaEmail($chave);
-        }
+        $chave = filter_input(INPUT_GET, "chave", FILTER_SANITIZE_STRING);
         if (isset($_SESSION['usuario'])){
             if ($controller->verificaUsuario($_SESSION['usuario'])){
                 $logado = true;
                 header("location: /");
             }
+        }    
+        if(isset($chave)){
+            unset($_SESSION['usuario']);
+            $controller = new FilmesController();
+            $controller->confirmaEmail($chave);
         }else
             require "./view/login.php";
 
@@ -44,13 +41,18 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
         
         if($result){ //false or user
             $logado = true;
-            $_SESSION['usuario'] = $result['usuario'];
-            $_SESSION['id_usuario'] = $result['id'];
-            $_SESSION['admin'] = $result['admin'];
-            if(isset($_SESSION['usuario']))
-                if($controller->verificaUsuario($_SESSION['usuario']))
-                    $_SESSION['msg'] = "Seja Bem Vindo!";
-                    header("location: /");
+            if($result['situacao'] === 'ativo'){
+                $_SESSION['usuario'] = $result['dados']['usuario'];
+                $_SESSION['id_usuario'] = $result['dados']['id'];
+                $_SESSION['admin'] = $result['dados']['admin'];
+                if(isset($_SESSION['usuario']))
+                    if($controller->verificaUsuario($_SESSION['usuario']))
+                        $_SESSION['msg'] = "Seja Bem Vindo!";
+                        header("location: /");
+            }else if ($result['situacao'] === "aguardando confirmação"){
+                $_SESSION['msg'] = "Ops, precisamos que confirme seu email!";
+                header("location: /login");
+            }
         }else{
             $_SESSION['msg'] = "Email ou Senha Incorretos";
             header("location: /login");

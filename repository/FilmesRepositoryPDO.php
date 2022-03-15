@@ -12,7 +12,7 @@ class FilmesRepositoryPDO{
     }
     
     public function validar($dados){
-        $sql = "SELECT usuario, id, data_cadastro, admin FROM usuario WHERE usuario = :usuario AND senha= :senha";    
+        $sql = "SELECT usuario, id, data_cadastro, sit_usuario_id, admin FROM usuario WHERE usuario = :usuario AND senha= :senha";    
         $stmt = $this->conexao->prepare($sql);
 
         $stmt->bindValue(':usuario', $dados->usuario, PDO::PARAM_STR); 
@@ -20,13 +20,22 @@ class FilmesRepositoryPDO{
         $stmt->execute();
         
         $dadosRetornados = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        
         if($stmt->rowCount()){
-            return $dadosRetornados;
+            $sql_sit_user = "SELECT nome_situacao FROM sit_usuario WHERE id = :id_sit";
+            $stmt_sit_user = $this->conexao->prepare($sql_sit_user);
+            $stmt_sit_user->bindValue(':id_sit',$dadosRetornados['sit_usuario_id'], PDO::PARAM_INT);
+            $stmt_sit_user->execute();
+            $sit_retornada = $stmt_sit_user->fetch(PDO::FETCH_ASSOC);
+            //if(isset($dadosRetornados['sit_usuario_id']))
+            return ['situacao'=> $sit_retornada['nome_situacao'], 'dados'=>$dadosRetornados];
+            //}else
+              //  return ['dados'=>$dadosRetornados];
         }else{
-            return false;
+            return ['dados'=>false];
         }
-    }
+        
+    }  
 
     public function verificaCadastroExistente($usuario){
         $sql = "SELECT usuario FROM usuario WHERE usuario = :usuario";    
@@ -70,12 +79,24 @@ class FilmesRepositoryPDO{
         $stmt->bindValue(':chave', $chave, PDO::PARAM_STR);
       
         $stmt->execute();
-        if($stmt->rowCount() != 0 ){
+        if(($stmt) and $stmt->rowCount() != 0 ){
+            $row_usuario = $stmt->fetch(PDO::PARAM_STR);
+            extract($row_usuario);
             
-            return ['msg'=>'Chave encontrada'];
+            $sql_up_sit_usuario = "UPDATE usuario SET sit_usuario_id = 1, chave=:chave WHERE id = $id";
+            
+            $up_sit_usuario = $this->conexao->prepare($sql_up_sit_usuario);
+            $chave = NULL;
+            $up_sit_usuario->bindValue(':chave', $chave, PDO::PARAM_STR);
+            
+            if($up_sit_usuario->execute()){
+                return ['pass'=> true];
+            }else{
+                return ['pass'=> false];
+            }
+        }else{
+            return ['pass'=> false];
         }
-        //return ['pass'=>$stmt->execute(), 'chave'=>$chave];
-
     }
 
     public function listarTodos($itens, $inicio):array{

@@ -3,7 +3,6 @@ session_start();
 include "cabecalho.php";
 
 require_once "./util/mensagem.php";
-//secho $_SESSION['msg'];
 ?>
 
 <body class="purple darken-1 main">
@@ -15,7 +14,7 @@ require_once "./util/mensagem.php";
                 <div class="card card-form-2">
 
                     <div class="card-action purple darken-1 white-text center-align title-form">
-                        <h3>Clorocine</h3>
+                        <h3>PLIX</h3>
                     </div>
                     <form method="POST">
                     <div class="card-content">

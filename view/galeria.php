@@ -18,7 +18,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
 ?>
 
 <body class="purple darken-1">
-    <main>
+   
     <nav class="nav-extended purple darken-2">
         <!-- Define a cor da NavBar compreendendo o título central-->
         <div class="nav-wrapper">
@@ -61,7 +61,9 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             <li class="purple darken-2"><a href="/login">Entrar</a></li>
         </ul>
     <?php } ?>
-    
+
+    <main>
+
     <div class="carousel">
         <?php foreach($destaques as $destaque) :?>
             <a class="carousel-item hoverable" href="/assistir/<?= str_replace(' ', '-', $destaque->titulo) . "?id=" . ($destaque->id) ?>">
@@ -88,19 +90,20 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
     <!-- <div class="container"> -->
     <div class="row poster-filmes">
         <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
-        <?php $c = 0;
+        <?php // $c = 0;
+        //Percorre filme a filme
         foreach ($filmes as $filme) : ?>
-            <!--Percorre filme a filme-->
+           
             <?php if (!is_int($filme)) : ?>
                 <!--Verifica filme ou int-->
-                <?php $c++ ?>
+                <?php //$c++ ?>
 
-                <div class="col s12 m6 l1 x1" id="card-filme">
+                <div class="col s12 m6 l1 xl1" id="card-filme">
                     <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
 
                     <!--Posters -->
-                    <div class="card hoverable">
-                        <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo) . "?id=" . ($filme->id) ?>">
+                    <div class="card">
+                        <a href="/assistir/<?= str_replace(',','-',str_replace(':','-',str_replace(';','-',str_replace(' ', '-', $filme->titulo)))) . "?id=" . ($filme->id) ?>">
                             <div class="card-image" id="card-imagem">
                                 <img class="activator" src="<?= (str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster //Verifica se é url ou diretorio 
                                                             ?>">
@@ -119,16 +122,6 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                                     <!--ícone Favorito-->
                                 </button>
                             </div>
-                        <?php }
-                        if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
-                            <!--Botão Editar -->
-                            <div>
-                                <a href="/editar/?id=<?= $filme->id ?>">
-                                    <button class="btn-edit btn-floating halfway-fab waves-effect waves-light black">
-                                        <i class="material-icons">edit</i>
-                                        <!--ícone Edit-->
-                                    </button></a>
-                            </div>
                         <?php } ?>
                         <div class="btn-nota halfway-fab valign-wrapper">
                             <!--Classe para alinhamento de elementos-->
@@ -137,12 +130,12 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                     </div>
                 </div>
 
-                <?php if ($c == 14) : ?>
-                    <div class="parallax-meio parallax-container">
+                 <?php  //if ($c == 14) : ?>
+                    <!-- <div class="parallax-meio parallax-container">
                         <div class="parallax"><img src="https://www.themoviedb.org/t/p/original/3dUByTea97X3XzznN8ZPFX9c7J7.jpg"></div>
-                    </div>
-                    <?php $c = 0; ?>
-                <?php endif ?>
+                    </div> -->
+                    <?php  //$c = 0; ?>
+                <?php // endif ?> 
 
             <?php endif ?>
         <?php endforeach ?>

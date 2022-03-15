@@ -19,7 +19,7 @@ $infoFilme = $dados['dados'];
 <nav class="nav-extended purple darken-2">
         <!-- Define a cor da NavBar compreendendo o título central-->
         <div class="nav-wrapper">
-            <a href="/inicio" class="brand-logo left">PLIX</a>
+            <a id="logo-id" href="/inicio" class="brand-logo left">PLIX</a>
 
             <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -35,7 +35,7 @@ $infoFilme = $dados['dados'];
                         <li><a onclick="sair()" href="#">Sair</a></li>
                         <li><a href="/favoritos">Favoritos</a></li>
                         <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
-                            <li><a href="/novo">Cadastrar Mídia</a></li>
+                            <li><a href="/novo">Painel de Controle</a></li>
                         <?php }?>
                     </ul>  
 
@@ -105,10 +105,12 @@ $infoFilme = $dados['dados'];
                                         <!-- card com botões Favorito e Salvar -->
                                         <div class="card-panel purple darken-3 botoes-save-favorito">
                                         <div class="valign-wrapper">
+                                        <?php $dados1 = ['id_filme'=>$info->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
                                             <a href="#" class="material-icons white-text hoverable" id="save">save</a>
                                                 <label class="label-icon white-text" for="save"><b>Assistir Mais Tarde</b></label>
-                                            <a href="#" class="material-icons red-text hoverable" id="favorito">favorite</a>
+                                            <a href="#" class="btn-fav" id="favorito" data-id="<?= urlencode(serialize($dados1)) ?>"><i class="material-icons red-text"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i></a>
                                                 <label class="label-icon white-text" for="favorito"><b>Favoritar</b></label>
+                                        
                                         </div>
                                     </div>
                                 </div>
@@ -205,7 +207,8 @@ include "rodape.php";
     document.querySelectorAll(".btn-fav").forEach(btn => {
         btn.addEventListener("click", e => { //Mudança do texto do html para modificar o ícone
             const id = btn.getAttribute("data-id") //informação do id do botão clicado
-            fetch(`/favoritar/${id}`) //faz a solicitação delete
+            console.log(id)
+            fetch(`/favoritar/${id}`) //faz a solicitação favorite
                 .then(response => response.json()) //quando tiver a resposta, converto para json
                 .then(response => { //após a conversão
                     if (response.success === "ok") { //Verifico o atributo success, se OK
@@ -217,6 +220,7 @@ include "rodape.php";
                     }
                 })
                 .catch(error => {
+                    console.log(response+"")
                     M.toast({
                         html: "Erro ao Favoritar"
                     })

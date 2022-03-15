@@ -7,6 +7,8 @@ body{
 
 main {
     flex: 1 0 auto;
+    padding: 0px;
+    margin:0px;
 }
 /* Fundo da pesquisa */
 .fundo-pesquisa{
@@ -37,9 +39,60 @@ main {
 }
 
 /* conteudo tela inicial */
-.poster-filmes{
-    margin-left: 80px;
-    margin-right: 72px;
+@media screen and (min-width: 0px) {
+    .poster-filmes{
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+    }
+    #card-filme{
+        width: 500px;
+        align-content: center;
+        grid-column-start: auto;
+        grid-column-end: auto;
+        align-self: center;
+    }
+}
+/* conteudo tela inicial */
+@media screen and (min-width: 450px) {
+    .poster-filmes{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+}
+
+@media screen and (min-width: 600px) {
+    .poster-filmes{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media screen and (min-width: 750px) {
+    .poster-filmes{
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+@media screen and (min-width: 900px) {
+    .poster-filmes {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+    }
+  } 
+ @media screen and (min-width: 1098px) {
+    .poster-filmes {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+    }
+}  
+/* Card filme pequeno em massa*/
+#card-filme{
+    width: 150px;
+    align-self: center;
+    /* align-content: center;
+    grid-column-start: auto;
+    grid-column-end: auto; */
 }
 
 /* Parallax */
@@ -147,23 +200,6 @@ nav ul li.active, .tab a.active {
  
 }
 
-/* .row .col.l4 {
-    width: 100%;
-} */
-
-/* .fundo-apresentacao{
-    /* max-width: 100%; */
-    /* max-height: 100%;
-    size: cover;
-    position: absolute;
-} */
-
-/* .img-apresentacao{
-    opacity: 70%;
-    position: center;
-    object-fit: contain;
-} */ 
-
 .btn-flat{
    align-content: center;
 }
@@ -183,12 +219,12 @@ nav ul li.active, .tab a.active {
 
 /* link nota sem acesso */
 a{
-    color: #000;
+    color: none;
 }
 
 /* link nota mouse */
 a:hover{
-    color: #546e7a; 
+    color: none; 
 }
 
 /* Nota Galeria*/
@@ -207,26 +243,12 @@ a:hover{
     size: initial;
 }
 
-/* .video-container iframe, .video-container object, .video-container embed, .player{
-    width: 100%;
-    z-index: 20;
-    height: 100%;
-    left: 0px;
-    top: 0px;
-  } */
-
 /* Titulo do card */
 #titulo-content{
     font-size: small;
     text-align: center;
     background: rgba(0, 0, 0, 0.755);
     width: 100vh;
-}
-
-/* Card filme pequeno em massa*/
-#card-filme{
-    width: 180px;
-    height: 280px;
 }
 
 /*tela de login*/

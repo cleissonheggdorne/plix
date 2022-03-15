@@ -23,5 +23,8 @@
 
     <link rel="stylesheet" href="/styles/style.css">
 
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9897683100163895"
+     crossorigin="anonymous"></script>
+
     <title>Plix</title>
 </head>

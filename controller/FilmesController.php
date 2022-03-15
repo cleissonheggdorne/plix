@@ -6,6 +6,7 @@ REQUIRE "./repository/FilmesRepositoryPDO.php";
 // REQUIRE "./model/Filme.php";
 REQUIRE "./util/ConsumoApi.php";
 //REQUIRE "."
+REQUIRE "./model/confirmacaoEmail.php";
 
 //Bibblioteca para verificação de email
 //Import PHPMailer classes into the global namespace
@@ -36,7 +37,6 @@ class FilmesController{
         }else if(array_key_exists('titulo', $busca) and ($tipo == "galeria" or $tipo == "syscontrol")){
             return $filmesRepository->listarBusca($busca);
         }else if(array_key_exists('titulo', $busca) and $tipo == "destaque"){
-            //echo json_encode("filmescontroller");
             echo json_encode($filmesRepository->listarBusca($busca));
         }
         
@@ -58,11 +58,13 @@ class FilmesController{
         $dados = (object) $request;
 
         $dadosUsuario = $filmesRepository->validar($dados);
-        var_dump($dadosUsuario);
-        if($dadosUsuario != false){  //Executa a instrução verificando se TRUE//
+        if(isset($dadosUsuario['situacao']) )//=== 'ativo')  //Executa a instrução verificando se TRUE//
             return $dadosUsuario;
-        }else
+        
+            // return false;
+        else{
             return false;
+        }
     }
 
     public function saveUser($request){
@@ -71,63 +73,28 @@ class FilmesController{
         $retorno = $filmesRepository->salvarUsuario($usuario);
         if($retorno['pass']){  //Executa a instrução//
             $chave = $retorno['chave'];
-            $mail = new PHPMailer(true);
+            $confirmaEmail = new ConfirmacaoEmail();
+            $result = $confirmaEmail->disparaEmail(['chave'=>$chave, 'usuario'=>$usuario->usuario]);
             
-            try{
-                //Server settings
-                //$mail->SMTPDebug = SMTP::DEBUG_SERVER; //só em desenvolvimento                      //Enable verbose debug output
-                $mail->CharSet = "UTF-8";
-                $mail->isSMTP();                                            //Send using SMTP
-                $mail->Host       = 'smtp.mailtrap.io';                     //Set the SMTP server to send through
-                $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                $mail->Username   = '1940a9db445c74';                     //SMTP username
-                $mail->Password   = '94e93e7a6c265e';                               //SMTP password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
-                $mail->Port       = 2525;   
-
-                //Recipients
-                $mail->setFrom('plix@plix.com', 'Mailer');
-                $mail->addAddress($usuario->usuario);     //Add a recipient
-                //$mail->addAddress('ellen@example.com');               //Name is optional
-                //$mail->addReplyTo('info@example.com', 'Information');
-                //$mail->addCC('cc@example.com');
-                //$mail->addBCC('bcc@example.com');
-                
-                //Content
-                $mail->isHTML(true);   //Set email format to HTML
-                $mail->Subject = 'Confirma o e-mail';
-                $mail->Body    = "Agradecemos o cadastro ao nosso site. <br><br>
-                Falta pouco para você aproveitar os melhores filmes gratuitamente,
-                basta clicar no link abaixo para confirmar seu email.<br><br> <a href='http://localhost:8080/login?chave=$chave'>Confirma Email</a><br>
-                Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
-                <br> ";
-                $mail->AltBody = "Agradecemos o cadastro ao nosso site. \n\n
-                Falta pouco para você aproveitar os melhores filmes gratuitamente,
-                basta clicar no link abaixo para confirmar seu email.\n\n http://localhost:8080/login?chave=$chave \n\n
-                Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
-                \n ";
-
-                $mail->send();
-                $_SESSION["msg"] = "Usuário cadastrado com sucesso. Verifique seu e-mail.";
-            
-            }catch (Exception $e) {
-               // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                //$_SESSION["msg"] = "Erro ao cadastrar usuário";
-                $_SESSION["msg"] = "{$mail->ErrorInfo}";
-            }
-            
-            //$_SESSION["msg"] = "Usuário cadastrado com sucesso";
+            if($result['msg'] === "ok")
+                $_SESSION["msg"] = "Usuário cadastrado. Verifique sua caixa de email antes de logar.";
+            else
+                $_SESSION['msg'] = "Desculpe, não conseguimos enviar a confirmação. \n Tente novamente.";
         }else
             $_SESSION["msg"] = "Erro ao cadastrar usuário";
-
+        
         header("Location: /login"); //Redirecionamento de página
     }
 
     public function confirmaEmail($chave){
         $filmesRepository = new FilmesRepositoryPDO();
-        $r = $filmesRepository->confirmaEmail($chave);
-        $_SESSION['msg'] = $r['msg'];
-        //REQUIRE "./view/Teste.php";
+        $retorno = $filmesRepository->confirmaEmail($chave);
+        if($retorno['pass']){
+            $_SESSION['msg'] = "E-mail Verificado. Você já pode fazer login!";
+        }else{
+            $_SESSION['msg'] = "E-mail não Verificado. Tente novamente";
+        }
+        header("Location: /login");
     }
 
     public function verificaUsuario($user){
@@ -248,7 +215,7 @@ class FilmesController{
         if(array_key_exists("pag_syscontrol", $id))
              echo json_encode($filmesRepository->listarInfoFilme($id['pag_syscontrol']));
         else
-            return $filmesRepository->listarInfoFilme(288);
+            return $filmesRepository->listarInfoFilme($id['pag_assistir']);
         //echo json_encode("teste retoornos");
     }
 
