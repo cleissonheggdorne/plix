@@ -1,32 +1,22 @@
   //esconder itens do menu
   document.addEventListener('DOMContentLoaded', function() {
+    var nvFilme = document.getElementById('modal-novo-filme');
+    var edtSlide = document.getElementById('modal-edit-slides');
     var sidenav = document.querySelectorAll('.sidenav');
+    var carrossel_destaques = document.querySelectorAll('.carousel');
+    var parallax = document.querySelectorAll('.parallax');
+    var dropdown = document.querySelectorAll('.dropdown-trigger');
+
+    var instances_nvFilme = M.Modal.init(nvFilme);
+    var instances_edtSlide = M.Modal.init(edtSlide);
     var instances_sidenav = M.Sidenav.init(sidenav);
-});
-
-//Carrosel de imagens
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.carousel');
-    var instances = M.Carousel.init(elems, {
-
-    });
-});
-//Parallax
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.parallax');
-    var instances = M.Parallax.init(elems);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.dropdown-trigger');
-    var instances = M.Dropdown.init(elems, {
+    var instances_carrossel_destaques = M.Carousel.init(carrossel_destaques);
+    var instances_parallax = M.Parallax.init(parallax);
+    var instances_dropdown = M.Dropdown.init(dropdown, {
         coverTrigger:false,
         hover:true
     });
 });
-
-var button = document.querySelectorAll(".btn-fav");
-console.log(button);
 
 // Sair
 function sair() {
@@ -35,15 +25,6 @@ function sair() {
         window.location.href = "/sair";
     }
 }
- //Janela Modal
- document.addEventListener('DOMContentLoaded', function(){
-    var nvFilme = document.getElementById('modal-novo-filme');
-    var edtSlide = document.getElementById('modal-edit-slides');
-    //console.log("teste modal editar filme")
-   
-    var instances_nvFilme = M.Modal.init(nvFilme);
-    var instances_edtSlide = M.Modal.init(edtSlide);
-});
 
 async function editarFilme(id){
     var edtFilme = document.getElementById('modal-editar-filme');
@@ -109,14 +90,11 @@ async function pesquisaTitulos(valor){
 //Auto complete modal destaque
 //Auto Complete
 async function buscaDestaque(valor){
-    //alert(valor)
+
     console.log(valor)
     if(valor.length >= 3 ){
         var dados = await fetch('/syscontrol?titulo-para-buscar=' + valor+ '&tipo=db');
          var resposta = await dados.json();
-        //var dados = await fetch('/syscontrol?destaque-busca=' + valor + '&tipo=destaque');
-        //var resposta = await dados.json();
-        //console.log(resposta)
         
          var options = {};
          var tituloEId = {}; //Utilizado no retorno do clique 
@@ -124,8 +102,6 @@ async function buscaDestaque(valor){
              options[resposta['dados'][i].titulo] = resposta['dados'][i].poster;
              tituloEId[resposta['dados'][i].titulo]       = resposta['dados'][i].id;
          }
-
-        // console.log("Options: " + options);
           
          var elems = document.getElementById('titulobuscadodestaque');
          var instances = M.Autocomplete.init(elems,
@@ -141,11 +117,6 @@ async function buscaDestaque(valor){
         );  
      }
 }
-
-// function abreModal(){
-//     var elems = document.getElementById('modal-edit-slides');
-//     var instances = M.Modal.init(elems)
-// }
 
 async function selecionaSlide(idNovo){
     var input_modal_id_anterior = document.querySelector('#input_modal_id_anterior')

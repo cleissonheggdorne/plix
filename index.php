@@ -34,7 +34,7 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
             $controller = new FilmesController();
             $controller->confirmaEmail($chave);
         }else
-            require "./view/login.php";
+            require "./view/paginas/login.php";
 
     if($metodo == "POST") {
         $result = $controller->validate($_REQUEST);
@@ -65,7 +65,7 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
 if ($rota === "/cadastro-de-usuario") {
     $controller = new FilmesController();
     if($metodo == "GET") 
-        require "./view/cadastrarUsuario.php";
+        require "./view/paginas/cadastrarUsuario.php";
     
     if($metodo == "POST") 
         $usuario= (object) $_REQUEST;
@@ -101,7 +101,7 @@ if ($rota === "/"
     (substr($rota, 0, strlen("/inicio?busca")) != "/inicio?busca")) {
     $controller = new FilmesController();
     $_SESSION['filmes'] = $controller->index($qtd_itens_pag, $inicio);
-    require "./view/galeria.php";
+    require "./view/paginas/galeria.php";
     unset($_SESSION['busca']);
     exit();
     
@@ -160,18 +160,14 @@ if ((substr($rota, 0, strlen("/syscontrol")) === "/syscontrol") && $_SESSION['ad
           
 
         }else{
-            require "./view/controle.php";
+            require "./view/paginas/controle.php";
             //busca no modal de seleção de destaques
         }
     else if ($metodo == "POST") {
         $filmesController = new FilmesController();
-        //if(isset($_POST["filme_id"])){
-            $dadosFilme = (array) $_REQUEST;
-            (array_key_exists('id', $dadosFilme))? $filmesController->edit($_REQUEST) : $filmesController->save($_REQUEST);
-        //}else{
-            
-            
-       // }
+        
+        $dadosFilme = (array) $_REQUEST;
+        (array_key_exists('id', $dadosFilme))? $filmesController->edit($_REQUEST) : $filmesController->save($_REQUEST);
         
     };
 
@@ -202,7 +198,7 @@ if ($rota === "/favoritos") {
         if (isset($_SESSION['usuario'])){
             if($controller->verificaUsuario($_SESSION['usuario']))
                 $logado = true;
-                require "./view/favoritos.php";
+                require "./view/paginas/favoritos.php";
         }else
             $_SESSION['msg'] = "Entre para visualizar seus Favoritos";
             header("location: /");
@@ -216,7 +212,7 @@ if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
     if(isset($busca) && $busca != "")
         header("location: /?busca=$busca");
     else
-        require "./view/assistir.php";
+        require "./view/paginas/assistir.php";
      exit();
  }
 
@@ -240,29 +236,6 @@ if (substr($rota, 0, strlen("/editar")) ==="/editar" && $_SESSION['admin'] == tr
     };
     exit();
 }
-
-// //Página Cadastrar
-// if ($rota === "/syscontrol") {
-//     $controller = new FilmesController();
-//     // if($metodo == "GET") 
-    
-//     //     if (isset($_SESSION['usuario'])){
-//     //         if ($_SESSION['admin'] == true)
-//     //             $logado = true;
-//     //             require "./view/cadastrar.php";
-
-//     //     }else
-//     //         $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
-//     //         header("location: /");
-//     echo "teste";
-//     if($metodo == "POST") {
-//         $controller->save($_REQUEST);
-//     };
-//     exit();
-// }
-// //Importar arquivo
-//  if ($rota === "/importar-arquivo")
-//     require "./util/importaDados.php";
 
 //Rota de Favoritar
 if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){

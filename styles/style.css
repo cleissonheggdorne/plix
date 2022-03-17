@@ -210,6 +210,20 @@ nav ul li.active, .tab a.active {
     top: 10px; 
 }
 
+/* Botão favorito detalhes sinopse */
+.btn-fav-detalhes {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;  
+}
+
+.btn-fav-detalhes:hover{
+    color: transparent;
+}
+
 /* Botão Editar */
 .btn-edit.btn-floating.halfway-fab{
     position: absolute; 

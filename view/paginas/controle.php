@@ -1,4 +1,4 @@
-<?php include "cabecalho.php";
+<?php include "./view/estrutura/cabecalho.php";
 ?>
 
 <?php
@@ -19,7 +19,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
 ?>
 
 <body class="purple darken-1">
-    <main>
+  
         <nav class="nav-extended purple darken-2">
             <!-- Define a cor da NavBar compreendendo o título central-->
             <div class="nav-wrapper">
@@ -74,6 +74,8 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                 <li class="purple darken-2"><a href="/login">Entrar</a></li>
             </ul>
         <?php } ?>
+
+        <main>
 
         <?php ?>
         <div class="carousel">
@@ -570,6 +572,6 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
     </script>
 
     <?php
-    include "rodape.php";
+    include "./view/estrutura/rodape.php";
     ?>
 </body>

@@ -1,6 +1,6 @@
 <?php 
 session_start();
-include "cabecalho.php";
+include "./view/estrutura/cabecalho.php";
 
 require_once "./util/mensagem.php";
 ?>
@@ -61,6 +61,9 @@ require_once "./util/mensagem.php";
             </div>
         </div>
         <?= Mensagem::mostrar(); ?>
+        <?php
+            REQUIRE './view/estrutura/rodape.php';
+        ?>
 </body>
 
 </html>

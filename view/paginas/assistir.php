@@ -1,4 +1,4 @@
-<?php include "cabecalho.php";
+<?php include "./view/estrutura/cabecalho.php";
 
 ?>
 
@@ -16,36 +16,12 @@ $infoFilme = $dados['dados'];
 ?>
 
 <body>
-<nav class="nav-extended purple darken-2">
-        <!-- Define a cor da NavBar compreendendo o título central-->
-        <div class="nav-wrapper">
-            <a id="logo-id" href="/inicio" class="brand-logo left">PLIX</a>
 
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <!--Responsividade, esconde a barra quando a tela for média ou pequena-->
-                <li class="active"><a href="/inicio">Galeria</a></li>
-               
-                <?php 
-                if ($_SESSION['usuario'] != "") { ?>
-                    <!--Verifica se usuario existe-->
-                    
-                  <a class='dropdown-trigger btn transparent' href='#' data-target='dropdown1'><?= $_SESSION['usuario'] ?></a>
-                    <ul id='dropdown1' class='dropdown-content'>
-                        <li><a onclick="sair()" href="#">Sair</a></li>
-                        <li><a href="/favoritos">Favoritos</a></li>
-                        <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
-                            <li><a href="/novo">Painel de Controle</a></li>
-                        <?php }?>
-                    </ul>  
-
-                <?php } else { ?>
-                    <li><a href="/login">Entrar</a></li>
-                <?php } ?>
-            </ul>
-        </div>
-    </nav>
-
+    <?php
+        /* Barra de Navegação e Menu móvel */
+        REQUIRE "./view/estrutura/sidenav-e-menuMobile.php"; 
+    ?>
+    <main>
     <div class="fundo-pesquisa purple darken-1">
         <nav class="busca container purple lighten-3">
             <div class="nav-wrapper center">
@@ -108,9 +84,8 @@ $infoFilme = $dados['dados'];
                                         <?php $dados1 = ['id_filme'=>$info->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
                                             <a href="#" class="material-icons white-text hoverable" id="save">save</a>
                                                 <label class="label-icon white-text" for="save"><b>Assistir Mais Tarde</b></label>
-                                            <a href="#" class="btn-fav" id="favorito" data-id="<?= urlencode(serialize($dados1)) ?>"><i class="material-icons red-text"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i></a>
+                                            <button class="btn-fav-detalhes" id="favorito" data-id="<?= urlencode(serialize($dados1)) ?>"><i class="material-icons red-text"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i></button>
                                                 <label class="label-icon white-text" for="favorito"><b>Favoritar</b></label>
-                                        
                                         </div>
                                     </div>
                                 </div>
@@ -143,51 +118,12 @@ $infoFilme = $dados['dados'];
                 </div>
             </div>
         </div>
-        <div class="container">
-        <div class="row">
-            <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
-            <?php
-            foreach ($filmes as $filme) : ?> <!--Percorre filme a filme-->
-               <?php if (!is_int($filme)) :?> <!--Verificação de Número de páginas-->
-                    
-                
-                <div class="col s12 m6 l4 xl3" id="card-filme">
-                    <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
 
-                    <!--Posters -->
-                    <div class="card">
-                        <a href="/assistir/<?= str_replace(' ', '-', $filme->titulo) . "?id=" . ($filme->id) ?>">
-                            <div class="card-image" id="card-imagem">
-                                <img class="activator" src="<?= (str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster //Verifica se é url ou diretorio 
-                                                            ?>">
-                        
-                                <!-- Título  -->
-                                <span class="card-title" id="titulo-content"><?= $filme->titulo?></span>
-                                
-                            </div>
-                        </a>
-
-                        <?php if ($_SESSION['usuario'] != "") { ?>
-                            <div>  <!-- Verificação de usuário logado e permissão de admin 1=true e 0=false-->
-                                <?php $dados = ['id_filme'=>$filme->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
-                                <!--Botão favorito -->
-                                <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">
-                                    <i class="material-icons"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i>
-                                    <!--ícone Favorito-->
-                                </button>
-                            </div>
-                        <?php } ?>
-                            <div class="btn-nota halfway-fab valign-wrapper">
-                                    <!--Classe para alinhamento de elementos-->
-                                    <i class="imdb material-icons black-text" id="nota">star</i><b><?= $filme->nota ?><a href="https://www.imdb.com/">  IMDB</a></b>
-                            </div>
-                    </div>
-
-                </div>
-                <?php endif ?>
-            <?php endforeach ?>
-        </div>
-    </div>
+        <?php
+            /* Mostra grid de filmes*/ 
+            REQUIRE "./view/estrutura/gridFilmes.php"; 
+        ?>
+        
     <ul class="pagination container">
         <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
             <?php for($cont = 1; $cont<$num_paginas; $cont++) : ?>
@@ -197,14 +133,17 @@ $infoFilme = $dados['dados'];
     </ul>
 
     <?= Mensagem::mostrar(); ?>
+    </main>
+
     <?php 
-include "rodape.php";
-?>
+        include "./view/estrutura/rodape.php";
+    ?>
+
 </body>
 
 <script>
     //Favoritar
-    document.querySelectorAll(".btn-fav").forEach(btn => {
+    document.querySelectorAll(".btn-fav, .btn-fav-detalhes").forEach(btn => {
         btn.addEventListener("click", e => { //Mudança do texto do html para modificar o ícone
             const id = btn.getAttribute("data-id") //informação do id do botão clicado
             console.log(id)

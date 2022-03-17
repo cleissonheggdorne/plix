@@ -1,4 +1,4 @@
-<?php include "cabecalho.php";
+<?php include "./view/estrutura/cabecalho.php";
 ?>
 
 <?php
@@ -15,49 +15,10 @@ $filmes = $controller->fav($_SESSION['id_usuario']);
 
 <body>
     <main>
-    <nav class="nav-extended purple darken-2">
-        <!-- Define a cor da NavBar compreendendo o título central-->
-        <div class="nav-wrapper">
-            <a href="/inicio" class="brand-logo left">PLIX</a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <!--Responsividade, esconde a barra quando a tela for média ou pequena-->
-                <li class="active"><a href="/inicio">Galeria</a></li>
-
-                <?php
-                if ($_SESSION['usuario'] != "") { ?>
-                    <!--Verifica se usuario existe-->
-
-                    <a class='dropdown-trigger btn transparent' href='#' data-target='dropdown1'><?= $_SESSION['usuario'] ?></a>
-                    <ul id='dropdown1' class='dropdown-content'>
-                        <li><a onclick="sair()" href="#">Sair</a></li>
-                        <li><a href="/favoritos">Favoritos</a></li>
-                        <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) { ?>
-                            <li><a href="/syscontrol">Controle</a></li>
-                        <?php } ?>
-                    </ul>
-
-                <?php } else { ?>
-                    <li><a href="/login">Entrar</a></li>
-                <?php } ?>
-            </ul>
-        </div>
-    </nav>
-
     <?php
-    if ($_SESSION['usuario'] != "") { ?>
-        <!--Verifica se usuario existe-->
-        <ul class="sidenav purple lighten-3" id="mobile-demo">
-            <li class="center purple darken-2"><?= $_SESSION['usuario'] ?></li>
-            <li><a href="/favoritos">Favoritos</a></li>
-            <li><a href="/syscontrol">Controle</a></li>
-            <li><a onclick="sair()" href="#">Sair</a></li>
-        </ul>
-    <?php } else { ?>
-        <ul class="sidenav purple lighten-3" id="mobile-demo">
-            <li class="purple darken-2"><a href="/login">Entrar</a></li>
-        </ul>
-    <?php } ?>
+        /* Barra de Navegação e Menu móvel */
+        REQUIRE "./view/estrutura/sidenav-e-menuMobile.php"; 
+    ?>
 
     <div class="container">
         <div class="row">
@@ -119,16 +80,11 @@ $filmes = $controller->fav($_SESSION['id_usuario']);
     </ul>
     </main>
     <?= Mensagem::mostrar(); ?>
-
-    <!--Sair do Login -->
-    <script>
-        function sair() {
-            var confirmar = confirm("Deseja Sair?");
-            if (confirmar == true) {
-                window.location.href = "/sair";
-            }
-        }
-    </script>
+    
+    <?php
+        /* Barra de Navegação e Menu móvel */
+        REQUIRE "./view/estrutura/rodape.php"; 
+    ?>
 
     <script>
         //DESFavoritar
@@ -153,36 +109,5 @@ $filmes = $controller->fav($_SESSION['id_usuario']);
             });
         });
     </script>
-
-    <script>
-        //Delete
-        document.querySelectorAll(".btn-delete").forEach(btn => {
-            btn.addEventListener("click", e => {
-                const id = btn.getAttribute("data-id") //informação do id do botão clicado
-                const requestConfig = {
-                    method: "DELETE",
-                    headers: new Headers()
-                }
-                fetch(`/filmes/${id}`, requestConfig) //faz a solicitação de deletar
-                    .then(response => response.json()) //quando tiver a resposta, converto para json
-                    .then(response => { //após a conversão
-                        if (response.success === "ok") { //Verifico o atributo success, se OK
-                            const card = btn.closest(".col") //pegar elemento mais próximo do botão
-                            card.classList.add("fadeOut") //Adiciona classe com efeito de FadeOut
-                            setTimeout(() => card.remove(), 1000) //executa a função após certo tempo
-                        }
-                    })
-                    .catch(error => {
-                        M.toast({
-                            html: "Erro ao Apagar"
-                        })
-                    })
-            });
-        });
-    </script>
-
-    <?php
-    include "rodape.php";
-    ?>
 
 </body>
