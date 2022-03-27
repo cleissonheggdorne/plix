@@ -61,7 +61,7 @@ async function pesquisaTitulos(valor){
             tituloEId[resposta['dados'][i].titulo]       = resposta['dados'][i].id;
         }
 
-        console.log("Options: " + options);
+        //console.log("Options: " + options);
           
         var elems = document.getElementById('titulobuscado');
         var instances = M.Autocomplete.init(elems,
@@ -69,11 +69,11 @@ async function pesquisaTitulos(valor){
             minLength: 3,
             onAutocomplete:async function(res){ //Traz informações para a tela
                 if(res in tituloEId){
-                    console.log('id tmdb; '+ tituloEId[res]);
+                   // console.log('id tmdb; '+ tituloEId[res]);
                     var idTmdb = tituloEId[res];
                     var dadosInfoFilmesApi =  await fetch('/syscontrol?id-filme-tmdb=' + idTmdb);
                     dadosInfoFilmesApi = await dadosInfoFilmesApi.json();
-                    console.log(dadosInfoFilmesApi);
+                    //console.log(dadosInfoFilmesApi);
                     document.getElementById("titulo").value = dadosInfoFilmesApi[0].title
                     document.getElementById("sinopse").innerHTML = dadosInfoFilmesApi[0].sinopse
                     document.getElementById("nota").value = dadosInfoFilmesApi[0].nota
@@ -91,7 +91,7 @@ async function pesquisaTitulos(valor){
 //Auto Complete
 async function buscaDestaque(valor){
 
-    console.log(valor)
+    //console.log(valor)
     if(valor.length >= 3 ){
         var dados = await fetch('/syscontrol?titulo-para-buscar=' + valor+ '&tipo=db');
          var resposta = await dados.json();
@@ -141,7 +141,7 @@ async function pesquisaParaSlide(valor){
             tituloEId[resposta['dados'][i].titulo]       = resposta['dados'][i].id;
         }
 
-        console.log("Options: " + options);
+        //console.log("Options: " + options);
           
         var elems = document.getElementById('titulobuscadoslide');
         var instances = M.Autocomplete.init(elems,
@@ -153,7 +153,7 @@ async function pesquisaParaSlide(valor){
                     var idTmdb = tituloEId[res];
                     var dadosInfoFilmesApi =  await fetch('/syscontrol?id-filme-tmdb=' + idTmdb);
                     dadosInfoFilmesApi = await dadosInfoFilmesApi.json();
-                    console.log(dadosInfoFilmesApi);
+                   // console.log(dadosInfoFilmesApi);
                     document.getElementById("titulo").value = dadosInfoFilmesApi[0].title
                     document.getElementById("sinopse").innerHTML = dadosInfoFilmesApi[0].sinopse
                     document.getElementById("nota").value = dadosInfoFilmesApi[0].nota

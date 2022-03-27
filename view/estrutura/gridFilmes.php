@@ -1,6 +1,6 @@
 <!-- <div class="container"> -->
 <div class="row poster-filmes">
-        <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes cadastrados</p>" ?>
+        <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes para exibir</p>" ?>
         <?php // $c = 0;
         //Percorre filme a filme
         foreach ($filmes as $filme) : ?>
@@ -16,7 +16,7 @@
                     <div class="card">
                         <a href="/assistir/<?= str_replace(array(':',';', '?', ',', '.', '!'), '-', $filme->titulo) . "?id=" . ($filme->id) ?>">
                             <div class="card-image" id="card-imagem">
-                                <img class="activator" src="<?= (str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster //Verifica se é url ou diretorio 
+                                <img class="activator" src="<?= ($filme->poster != "")? ((str_contains($filme->poster, 'imagens/posters')) ?  '/' . $filme->poster : $filme->poster) : './imagens/posters/poster-generico.png';//Verifica se é url ou diretorio 
                                                             ?>">
                                 <!-- Título  -->
                                 <span class="card-title" id="titulo-content"><?= $filme->titulo ?></span>

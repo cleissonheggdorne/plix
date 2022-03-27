@@ -177,16 +177,15 @@ if ((substr($rota, 0, strlen("/syscontrol")) === "/syscontrol") && $_SESSION['ad
 //Busca
 if($metodo == "GET" && (substr($rota, 0, strlen("/inicio?busca")) === "/inicio?busca")
      or substr($rota, 0, strlen("/?busca")) === "/?busca") {
-    if(isset($busca))
+    
         $busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING); //Busca Galeria
-        $_SESSION['busca']=$busca;
-        $filmesController = new FilmesController();
-    
-        $buscaRetornada = $filmesController->busca(['titulo'=>$busca], "galeria");
-        $_SESSION['buscaRetornada'] = $buscaRetornada;
-        header("location: /inicio");
-        exit();
-    
+        if(isset($busca))
+            $_SESSION['busca']= $busca;
+            $filmesController = new FilmesController();
+            $_SESSION['buscaRetornada'] = $filmesController->busca(['titulo'=>$busca], "galeria");
+            header("location: /inicio");
+            exit();
+        
         
 }
 
@@ -209,7 +208,11 @@ if ($rota === "/favoritos") {
 //Pagina individual de cada filme
 if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
     $busca = filter_input(INPUT_GET, 'busca', FILTER_SANITIZE_STRING);
-    if(isset($busca) && $busca != "")
+    if (substr($rota, 0, strlen("/assistir-mais-tarde")) ==="/assistir-mais-tarde"){
+        $controller= new FilmesController();
+        $controller->assistirMaisTarde(basename($rota)); //Passa apenas a base da url (id do filme) 
+        exit();
+    }else if(isset($busca) && $busca != "")
         header("location: /?busca=$busca");
     else
         require "./view/paginas/assistir.php";
@@ -217,25 +220,25 @@ if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
  }
 
 //Pagina Editar
-if (substr($rota, 0, strlen("/editar")) ==="/editar" && $_SESSION['admin'] == true){
-    $controller = new FilmesController();
-    if($metodo == "GET") 
+// if (substr($rota, 0, strlen("/editar")) ==="/editar" && $_SESSION['admin'] == true){
+//     $controller = new FilmesController();
+//     if($metodo == "GET") 
         
-        if (isset($_SESSION['usuario'])){
-            if($controller->verificaUsuario($_SESSION['usuario']) && $_SESSION['admin']=== true)
-                $logado = true;
-                require "./view/editar.php";
+//         if (isset($_SESSION['usuario'])){
+//             if($controller->verificaUsuario($_SESSION['usuario']) && $_SESSION['admin']=== true)
+//                 $logado = true;
+//                 require "./view/editar.php";
 
-        }else
-            $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
-            header("location: /");
+//         }else
+//             $_SESSION['msg'] = "Você não tem acesso a esta funcionalidade";
+//             header("location: /");
     
-    if($metodo == "POST") {
-            $controller = new FilmesController();
-            $controller->edit($_REQUEST);
-    };
-    exit();
-}
+//     if($metodo == "POST") {
+//             $controller = new FilmesController();
+//             $controller->edit($_REQUEST);
+//     };
+//     exit();
+// }
 
 //Rota de Favoritar
 if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){
@@ -244,6 +247,14 @@ if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){
     exit();
 }
   
+//Rota de salvar para assistir mais tarde
+if (substr($rota, 0, strlen("/assistir-mais-tarde")) ==="/assistir-mais-tarde"){
+    //$controller= new FilmesController();
+    //$controller->assistirMaisTarde(basename($rota)); //Passa apenas a base da url (id do filme) 
+    echo json_encode('ok');
+    exit();
+}
+
 //Rota de deletar
 if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
     if($metodo == "GET") require "./view/galeria.php";

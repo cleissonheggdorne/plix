@@ -232,8 +232,43 @@ class FilmesRepositoryPDO{
         
     }
 
+    public function adicionarAListaSalva(Array $id_filme_usuario){
+
+        //$sql = "UPDATE filmes set favorito = NOT favorito WHERE id = :id"; 
+        $sql = "INSERT INTO filme_salvo(id_filme, id_usuario)
+        VALUES(:id_filme, :id_usuario)";  
+
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bindValue(':id_filme', $id_filme_usuario['id_filme'], PDO::PARAM_INT); 
+        $stmt->bindValue(':id_usuario', $id_filme_usuario['id_usuario'], PDO::PARAM_INT); 
+        
+        if($stmt->execute()){
+            return "ok";
+        }else {
+            return "erro";
+        }
+    
+}
+
     public function verificaFavorito(Array $id_filme_usuario){
         $sql = "SELECT * FROM filme_favorito WHERE id_usuario = :id_usuario AND id_filme= :id_filme";    
+        $stmt = $this->conexao->prepare($sql);
+
+        $stmt->bindValue(':id_usuario', $id_filme_usuario['id_usuario'], PDO::PARAM_INT); 
+        $stmt->bindValue(':id_filme', $id_filme_usuario['id_filme'],  PDO::PARAM_INT );
+        $stmt->execute();
+        
+        $dadosRetornados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($stmt->rowCount()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function verificaSalvo(Array $id_filme_usuario){
+        $sql = "SELECT * FROM filme_salvo WHERE id_usuario = :id_usuario AND id_filme= :id_filme";    
         $stmt = $this->conexao->prepare($sql);
 
         $stmt->bindValue(':id_usuario', $id_filme_usuario['id_usuario'], PDO::PARAM_INT); 
@@ -252,6 +287,21 @@ class FilmesRepositoryPDO{
     public function desFavoritar(Array $id_filme_usuario){
         //$sql = "UPDATE filmes set favorito = NOT favorito WHERE id = :id"; 
         $sql = "DELETE FROM filme_favorito
+                    WHERE id_filme = :id_filme and id_usuario = :id_usuario";  
+
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bindValue(':id_filme', $id_filme_usuario['id_filme'], PDO::PARAM_INT); 
+        $stmt->bindValue(':id_usuario', $id_filme_usuario['id_usuario'], PDO::PARAM_INT); 
+        if($stmt->execute()){
+            return "ok";
+        }else {
+            return "erro";
+        }
+    }
+
+    public function retirarDaListaSalva(Array $id_filme_usuario){
+        //$sql = "UPDATE filmes set favorito = NOT favorito WHERE id = :id"; 
+        $sql = "DELETE FROM filme_salvo
                     WHERE id_filme = :id_filme and id_usuario = :id_usuario";  
 
         $stmt = $this->conexao->prepare($sql);

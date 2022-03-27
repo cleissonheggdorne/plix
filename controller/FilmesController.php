@@ -8,13 +8,6 @@ REQUIRE "./util/ConsumoApi.php";
 //REQUIRE "."
 REQUIRE "./model/confirmacaoEmail.php";
 
-//Bibblioteca para verificação de email
-//Import PHPMailer classes into the global namespace
-//These must be at the top of your script, not inside a function
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 //Load Composer's autoloader
 require 'lib/vendor/autoload.php';
 
@@ -58,10 +51,8 @@ class FilmesController{
         $dados = (object) $request;
 
         $dadosUsuario = $filmesRepository->validar($dados);
-        if(isset($dadosUsuario['situacao']) )//=== 'ativo')  //Executa a instrução verificando se TRUE//
+        if( isset($dadosUsuario['situacao']) ) //Executa a instrução verificando se TRUE//
             return $dadosUsuario;
-        
-            // return false;
         else{
             return false;
         }
@@ -169,10 +160,33 @@ class FilmesController{
         }
     }
 
-    //Verifica Favorito na galeria
+    public function assistirMaisTarde(String $ids){
+        $id_filme_usuario = unserialize(urldecode($ids));
+
+        $filmesRepository = new FilmesRepositoryPDO();
+        if(!$filmesRepository->verificaSalvo($id_filme_usuario)){
+            $result = ['success' => $filmesRepository->adicionarAListaSalva($id_filme_usuario)];
+            header('Content-type: application/json');
+            echo json_encode($result);
+            return $result;
+        }else{
+            $result = ['success' => $filmesRepository->retirarDaListaSalva($id_filme_usuario)];
+            header('Content-type: application/json');
+            echo json_encode($result);
+            return $result;
+        }
+    }
+
+    //Verifica Favorito 
     public function controlVerificaFavorito(Array $ids):bool{ //id usuário e id filme
         $filmesRepository = new FilmesRepositoryPDO();
         return $filmesRepository->verificaFavorito($ids);
+    }
+
+    //Verifica salvo 
+    public function controlVerificaSalvo(Array $ids):bool{ //id usuário e id filme
+        $filmesRepository = new FilmesRepositoryPDO();
+        return $filmesRepository->verificaSalvo($ids);
     }
 
     //Deletar
@@ -237,12 +251,6 @@ class FilmesController{
         }
         
     }
-
-    // public function getDestaque($searchTitle){
-    //     $filmesRepository = new FilmesRepositoryPDO();
-    //     $dadosTitulosDestaque = $filmesRepository->buscaResultadosDestaque($searchTitle);
-    //     echo json_encode($dadosTitulosApi);
-    // }
 
     //ConsumoApi busca informações pelo id do TMDB
     public function getApiRegisterFilm($searchId){

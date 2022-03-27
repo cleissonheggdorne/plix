@@ -45,7 +45,7 @@ $infoFilme = $dados['dados'];
                             <div class="col s12 m6 l6 xl6">
                                 <!-- Imagem do pôster-->
                                 <div class="card-image assistir">
-                                    <img class ="image-assistir" src="<?= (str_contains($info->poster, 'imagens/posters')) ?  '/' . $info->poster : $info->poster //Verifica se é url ou diretorio 
+                                    <img class ="image-assistir" src="<?= ($info->poster != "") ? ((str_contains($info->poster, 'imagens/posters')) ?  '/' . $info->poster : $info->poster) : '../imagens/posters/poster-generico.png'//Verifica se é url ou diretorio 
                                                 ?>">
                                     <!--Aqui tem que entrar a imagem do pôster-->
                                 </div>
@@ -81,10 +81,11 @@ $infoFilme = $dados['dados'];
                                         <!-- card com botões Favorito e Salvar -->
                                         <div class="card-panel purple darken-3 botoes-save-favorito">
                                         <div class="valign-wrapper">
-                                        <?php $dados1 = ['id_filme'=>$info->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
-                                            <a href="#" class="material-icons white-text hoverable" id="save">save</a>
+                                        <?php $dados_fav_e_save = ['id_filme'=>$info->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
+                                            <!-- <a href="#" class="btn-save material-icons white-text hoverable" id="save" data-id="-->
+                                            <button class="btn-save"id="save" data-id="<?= urlencode(serialize($dados_fav_e_save)) ?>"><i class="material-icons red-text"><?= ($controller->controlVerificaSalvo($dados_fav_e_save)) ? "bookmark" : "bookmark_border" ?></i></button>
                                                 <label class="label-icon white-text" for="save"><b>Assistir Mais Tarde</b></label>
-                                            <button class="btn-fav-detalhes" id="favorito" data-id="<?= urlencode(serialize($dados1)) ?>"><i class="material-icons red-text"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i></button>
+                                            <button class="btn-fav-detalhes" id="favorito" data-id="<?= urlencode(serialize($dados_fav_e_save)) ?>"><i class="material-icons red-text"><?= ($controller->controlVerificaFavorito($dados_fav_e_save)) ? "favorite" : "favorite_border" ?></i></button>
                                                 <label class="label-icon white-text" for="favorito"><b>Favoritar</b></label>
                                         </div>
                                     </div>
@@ -150,6 +151,7 @@ $infoFilme = $dados['dados'];
             fetch(`/favoritar/${id}`) //faz a solicitação favorite
                 .then(response => response.json()) //quando tiver a resposta, converto para json
                 .then(response => { //após a conversão
+                    
                     if (response.success === "ok") { //Verifico o atributo success, se OK
                         if (btn.querySelector("i").innerHTML === "favorite") { //Faço a troca
                             btn.querySelector("i").innerHTML = "favorite_border"
@@ -159,11 +161,37 @@ $infoFilme = $dados['dados'];
                     }
                 })
                 .catch(error => {
-                    console.log(response+"")
+                    
                     M.toast({
                         html: "Erro ao Favoritar"
                     })
                 })
         });
     });
+
+    //adicionar a lista de assistir mais tarde
+    document.querySelectorAll(".btn-save").forEach(btn => {
+            btn.addEventListener("click", e => { //Mudança do texto do html para modificar o ícone
+                const id = btn.getAttribute("data-id") //informação do id do botão clicado
+                console.log(id)
+                fetch(`/assistir-mais-tarde/${id}`) //faz a solicitação favorite
+                    .then(response => response.json()) //quando tiver a resposta, converto para json
+                    //console.log(response.success)
+                    .then(response => { //após a conversão
+                        if (response.success === "ok") { //Verifico o atributo success, se OK
+                            if (btn.querySelector("i").innerHTML === "bookmark") { //Faço a troca
+                               btn.querySelector("i").innerHTML = "bookmark_border"
+                            }else {
+                               btn.querySelector("i").innerHTML = "bookmark"
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        M.toast({
+                            html: "Erro ao Salvar"
+                        })
+                    })
+            });
+        });
+
 </script>

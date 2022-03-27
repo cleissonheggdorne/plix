@@ -40,7 +40,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             <div class="nav-wrapper center">
                 <form method="GET">
                     <div class="input-field  hoverable">
-                        <input id="search" name="busca" type="search" required value="<?= $_SESSION['busca'] ?>">
+                        <input id="search" name="busca" type="search" value="<?= $_SESSION['busca'] ?>">
                         <label class="label-icon" for="search"><i class="material-icons">search</i></label>
                         <i class="material-icons">close</i>
                     </div>
@@ -48,12 +48,12 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             </div>
         </nav>
     </div>
-
+  
     <?php
         /* Mostra grid de filmes*/ 
-        REQUIRE "./view/estrutura/gridFilmes.php"; 
+        include "./view/estrutura/gridFilmes.php"; 
     ?>
-   
+   <div class="fundo-paginacao purple darken-1">
     <ul class="pagination container center">
         <?php if ($_GET['pagina'] >= 2) { ?>
             <li class="waves-effect"><a href="/inicio?pagina=<?= $_GET['pagina']-1 ?>"><i class="material-icons white-text">chevron_left</i></a></li>
@@ -62,7 +62,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
         <?php } ?>
         <?php for ($cont = 1; $cont <= $num_paginas; $cont++) : ?>
             <?php if ($_SERVER["REQUEST_URI"] == "/inicio?pagina=$cont") {?>
-                <li class="waves-effect active purple lighten-3"><a href="/inicio?pagina=<?= $cont ?>"><?= $cont ?></a></li>
+                <li class="waves-effect active black"><a href="/inicio?pagina=<?= $cont ?>"><?= $cont ?></a></li>
             <?php }else{ ?>
                 <li class="waves-effect"><a href="/inicio?pagina=<?= $cont ?>"><?= $cont ?></a></li>
             <?php }?>
@@ -73,6 +73,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             <li class="waves-effect"><a href="#"><i class="material-icons white-text">chevron_right</i></a></li>
         <?php } ?>
     </ul>
+   </div>
     <?= Mensagem::mostrar(); ?>
     </main>
 

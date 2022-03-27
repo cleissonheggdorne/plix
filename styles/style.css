@@ -10,7 +10,8 @@ main {
     padding: 0px;
     margin:0px;
 }
-/* Fundo da pesquisa */
+
+/* backgrounds  */
 .fundo-pesquisa{
     background-image: url("https://img.alicdn.com/bao/uploaded/TB1b.vPSXXXXXXVaXXXXXXXXXXX.jpg");
     background-size: cover;
@@ -23,6 +24,19 @@ main {
     justify-content: center; 
 }
 
+.fundo-paginacao{
+    background-image: url("https://img.alicdn.com/bao/uploaded/TB1b.vPSXXXXXXVaXXXXXXXXXXX.jpg");
+    background-size: cover;
+    background-color: #ce93d8;
+    background-blend-mode: soft-light;
+    padding: 10px;
+}
+
+.pagination li a {
+    color: rgb(255, 255, 255);
+  
+}
+
 .fundo-parallax{
     background-size: cover;
     background-color: #b457c4;
@@ -32,10 +46,6 @@ main {
 /* Input de busca */
 .busca{
     opacity: 70%;
-}
-
-.pagination{
-    margin-bottom: 30px;
 }
 
 /* conteudo tela inicial */
@@ -90,9 +100,6 @@ main {
 #card-filme{
     width: 150px;
     align-self: center;
-    /* align-content: center;
-    grid-column-start: auto;
-    grid-column-end: auto; */
 }
 
 /* Parallax */
@@ -211,7 +218,7 @@ nav ul li.active, .tab a.active {
 }
 
 /* Botão favorito detalhes sinopse */
-.btn-fav-detalhes {
+.btn-fav-detalhes, .btn-save {
     background-color: Transparent;
     background-repeat:no-repeat;
     border: none;
@@ -321,7 +328,7 @@ a:hover{
 
 .esqueci-senha{
     padding-top: 12px;
-    color: #8e24aa;
+    color: #ffffff;
 }
 
 .card-form{

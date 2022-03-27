@@ -1,7 +1,6 @@
 <?php 
 session_start();
 include "./view/estrutura/cabecalho.php";
-
 require_once "./util/mensagem.php";
 ?>
 

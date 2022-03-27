@@ -506,18 +506,6 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                 $('#input_modal_id_anterior').val(filme_id)
             })
         })
-
-       // $(document).ready(function() {
-         //   $(document).on('click', '#edit-filme', function() {
-               // $('.modal').modal();
-               //var instance = M.Modal.getInstance($('#modal-edit-slides'));
-               //instance.open();
-                //var filme_id = $(this).attr("data_filme_id");
-                //console.log(filme_id);
-               // $('#input_modal_id_filme').val(filme_id)
-
-           // })
-        //})
     </script>
 
 

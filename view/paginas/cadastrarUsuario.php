@@ -1,5 +1,5 @@
 <?php 
-include "cabecalho.php";
+include "./view/estrutura/cabecalho.php";
 
 require_once "./util/mensagem.php";
 session_start();
@@ -54,6 +54,9 @@ session_start();
             </div>
         </div>
         <?= Mensagem::mostrar(); ?>
+        <?php
+            REQUIRE './view/estrutura/rodape.php';
+        ?>
 </body>
 
 </html>
