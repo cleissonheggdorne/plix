@@ -109,36 +109,66 @@ class FilmesController{
         }
     }
 
-    public function save($request){
+    public function save($tipo, $request){
        
-        $filmesRepository = new FilmesRepositoryPDO();
-        $filme = (object) $request;
+        if($tipo === 'filme'){
+            $filmesRepository = new FilmesRepositoryPDO();
+            $filme = (object) $request;
 
-        $upload = $this->savePoster($_FILES);
+            $upload = $this->savePoster($tipo, $_FILES);
 
-        if(gettype($upload)=="string"){
-            $filme->poster = $upload;
+            if(gettype($upload)=="string"){
+                $filme->poster = $upload;
+            }
+
+            if($filmesRepository->salvar($filme))  //Executa a instrução//
+                $_SESSION["msg"] = "Filme cadastrado com sucesso";
+            else
+                $_SESSION["msg"] = "Erro ao cadastrar filme";
+
+            header("Location: /"); //Redirecionamento de página
+        }else if($tipo === 'arquivo'){
+            $filmesRepository = new FilmesRepositoryPDO();
+            //$filme = (object) $request;
+
+            $upload = $this->savePoster($tipo, $_FILES);
+
+            if(gettype($upload)=="string"){
+                if($filmesRepository->importarArquivo($upload))  //Executa a instrução//
+                    $_SESSION["msg"] = "Arquivo importado com sucesso";
+                else
+                    $_SESSION["msg"] = "Erro ao importar arquivo";
+
+            }else{
+                $_SESSION["msg"] = "Erro ao salvar arquivo, tente novamente.";
+                header("Location: /syscontrol"); //Redirecionamento de página
+            }
+
+            header("Location: /syscontrol"); //Redirecionamento de página
+            
         }
-
-        if($filmesRepository->salvar($filme))  //Executa a instrução//
-            $_SESSION["msg"] = "Filme cadastrado com sucesso";
-        else
-            $_SESSION["msg"] = "Erro ao cadastrar filme";
-
-        header("Location: /"); //Redirecionamento de página
-
     }
 
-    private function savePoster($file){
-        $posterDir = "imagens/posters/";
-        $posterPath = $posterDir.basename($file["poster_file"]["name"]);
-        $posterTmp = $file["poster_file"]["tmp_name"];
+    private function savePoster($tipo, $file){
         
-        if (move_uploaded_file($posterTmp, $posterPath)){
-            return $posterPath;
+        if($tipo === 'filme'){
+            $dir = "resources/imagens/posters/";
+            $path = $dir.basename($file["poster_file"]["name"]);
+            $tmp = $file["poster_file"]["tmp_name"];
+        }else{
+            $dir = "resources/arquivos/";
+            $path = $dir.basename($file["import_file"]["name"]);
+            $tmp = $file["import_file"]["tmp_name"];
+        }
+        
+        //$posterPath = $posterDir.basename($file["poster_file"]["name"]);
+        //$posterTmp = $file["poster_file"]["tmp_name"];
+        
+        if (move_uploaded_file($tmp, $path)){
+            return $path;
         }else{
             return false;
-        };
+        }
 
     }
 

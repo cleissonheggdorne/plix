@@ -164,10 +164,18 @@ if ((substr($rota, 0, strlen("/syscontrol")) === "/syscontrol") && $_SESSION['ad
             //busca no modal de seleção de destaques
         }
     else if ($metodo == "POST") {
-        $filmesController = new FilmesController();
-        
-        $dadosFilme = (array) $_REQUEST;
-        (array_key_exists('id', $dadosFilme))? $filmesController->edit($_REQUEST) : $filmesController->save($_REQUEST);
+        if(isset($_FILES))
+            if(array_key_exists('import_file',$_FILES)){
+                //$_SESSION['teste'] = $_FILES;
+                //include "./view/Teste.php";
+                $filmesController = new FilmesController();
+                $dadosFilme = (array) $_REQUEST;
+                $filmesController->save('arquivo', $_REQUEST);
+            }else{
+                $filmesController = new FilmesController();
+                $dadosFilme = (array) $_REQUEST;
+                (array_key_exists('id', $dadosFilme))? $filmesController->edit($_REQUEST) :  $filmesController->save('filme',$_REQUEST);
+            }
         
     };
 
@@ -270,6 +278,13 @@ if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
 //     require "./util/api.php";
 //     exit;
 // }
-require "./view/404.php";
+
+//Atualiza com API
+//if($rota === "/importar-arquivo"){
+   // require "./util/importaDados.php";
+  //  exit;
+//}
+
+require "./view/paginas/404.php";
 
 ?>

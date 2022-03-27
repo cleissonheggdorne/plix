@@ -1,6 +1,7 @@
   //esconder itens do menu
   document.addEventListener('DOMContentLoaded', function() {
     var nvFilme = document.getElementById('modal-novo-filme');
+    var importEmMassa = document.getElementById('modal-import-em-massa');
     var edtSlide = document.getElementById('modal-edit-slides');
     var sidenav = document.querySelectorAll('.sidenav');
     var carrossel_destaques = document.querySelectorAll('.carousel');
@@ -8,6 +9,7 @@
     var dropdown = document.querySelectorAll('.dropdown-trigger');
 
     var instances_nvFilme = M.Modal.init(nvFilme);
+    var instances_importEmMassa = M.Modal.init(importEmMassa);
     var instances_edtSlide = M.Modal.init(edtSlide);
     var instances_sidenav = M.Sidenav.init(sidenav);
     var instances_carrossel_destaques = M.Carousel.init(carrossel_destaques);

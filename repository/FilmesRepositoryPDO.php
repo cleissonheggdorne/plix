@@ -400,7 +400,7 @@ class FilmesRepositoryPDO{
         $sql = "LOAD DATA INFILE '$file' INTO TABLE filmes
         FIELDS TERMINATED BY ';'
         LINES TERMINATED BY '\n'
-        IGNORE 1 ROWS";
+        ";
 
         if($this->conexao->query($sql))
              return true;

@@ -54,7 +54,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
                     <li class="tab"><a class="active" href="#test2">Importar Arquivo</a></li>
                     <li class="tab disabled"><a href="#test3">Editar Filmes</a></li>
                     <li class="tab"><a class="modal-trigger" href="#modal-edit-slides">Editar Slides</a></li>
-                    <li class="tab"><a href="#test4">Editar Parallax</a></li>
+                    <li class="tab"><a class="modal-trigger" href="#modal-import-em-massa">Importar em massa</a></li>
                 </ul>
             </div>
         </nav>
@@ -204,6 +204,40 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
 
                     </div>
 
+                </div>
+                <div class="modal-footer">
+                    <a class="waves-effect waves-light btn grey" href="/syscontrol">Cancelar</a>
+                    <button type="submit" class="waves-effect waves-light btn purple">Salvar</a>
+                </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Para Cadastro de Novo Filme -->
+        <div class="row">
+            <!-- Modal Structure -->
+            <div id="modal-import-em-massa" class="modal modal-fixed-footer">
+
+                <!--Início Form-->
+                <div class="modal-content">
+
+                    <div class="card-content white-text">
+                        <span class="card-title black-text">Importar Arquivo</span>
+
+                        <form method="POST" enctype="multipart/form-data">
+
+                            <!--input da capa do filme-->
+                            <div class="row input-cadastro-filme file-field input-field">
+                                <div class="btn purple lighten-2 black-text">
+                                    <span>Capa</spam>
+                                        <input type="file" name="import_file">
+                                </div>
+                                <div class="input-field col s12">
+                                    <input class="file-path validate" id="url-poster" type="text" name="poster" value="" required>
+                                    <label for="url-poster">Url Poster</label>
+                                </div>
+                            </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a class="waves-effect waves-light btn grey" href="/syscontrol">Cancelar</a>
