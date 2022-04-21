@@ -5,7 +5,8 @@
 
 require_once "./util/mensagem.php";
 session_start();
-$genero = $_GET['genero'];
+$urlEmArray = explode("/", $rota);
+$genero = $urlEmArray[2];
 $filmesController = new FilmesController();
 
 if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
@@ -47,19 +48,19 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
    <div class="fundo-paginacao purple darken-1">
     <ul class="pagination container center">
         <?php if ($_GET['pagina'] >= 2) { ?>
-            <li class="waves-effect"><a href="/genero/?genero=<?=$genero?>&pagina=<?= $_GET['pagina']-1 ?>"><i class="material-icons white-text">chevron_left</i></a></li>
+            <li class="waves-effect"><a href="/genero/<?=$genero?>/?pagina=<?= $_GET['pagina']-1 ?>"><i class="material-icons white-text">chevron_left</i></a></li>
         <?php }else{ ?>
             <li class="disable"><a href="#"><i class="material-icons">chevron_left</i></a></li>
         <?php } ?>
         <?php for ($cont = 1; $cont <= $num_paginas; $cont++) : ?>
-            <?php if ($_SERVER["REQUEST_URI"] == "/genero/?genero=$genero&pagina=$cont") {?>
-                <li class="waves-effect active black"><a href="/genero/?genero=<?=$genero?>&pagina=<?= $cont ?>"><?= $cont ?></a></li>
+            <?php if ($_SERVER["REQUEST_URI"] == "/genero/$genero/?pagina=$cont") {?>
+                <li class="waves-effect active black"><a href="/genero/<?=$genero?>/?pagina=<?= $cont ?>"><?= $cont ?></a></li>
             <?php }else{ ?>
-                <li class="waves-effect"><a href="/genero/?genero=<?=$genero?>&pagina=<?= $cont ?>"><?= $cont ?></a></li>
+                <li class="waves-effect"><a href="/genero/<?=$genero?>/?pagina=<?= $cont ?>"><?= $cont ?></a></li>
             <?php }?>
         <?php endfor ?>
         <?php if ($_GET['pagina'] < $num_paginas) { ?>
-            <li class="waves-effect"><a href="/genero/?genero=<?=$genero?>&pagina=<?= $_GET['pagina']+1 ?>"><i class="material-icons white-text">chevron_right</i></a></li>
+            <li class="waves-effect"><a href="/genero/<?=$genero?>/?pagina=<?= $_GET['pagina']+1 ?>"><i class="material-icons white-text">chevron_right</i></a></li>
         <?php }else{ ?>
             <li class="waves-effect"><a href="#"><i class="material-icons white-text">chevron_right</i></a></li>
         <?php } ?>

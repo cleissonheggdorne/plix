@@ -114,12 +114,13 @@ if ($rota === "/"
 //Pagina Filmes por Genero
 if (substr($rota, 0, strlen("/genero/")) === "/genero/") {
     $generoId= filter_input(INPUT_GET, 'genero', FILTER_SANITIZE_NUMBER_INT);
+    $urlEmArray = explode("/", $rota); //Divide a url em um array de acordo com o separador escolhido
     $controller = new FilmesController();
-    $_SESSION['filmes'] = $controller->generoController(['id'=>$generoId, 'inicio'=>$inicio, 'numItens' => $qtd_itens_pag]);
+    $_SESSION['filmes'] = $controller->generoController(['id'=>$urlEmArray[2], 'inicio'=>$inicio, 'numItens' => $qtd_itens_pag]);
     require "./view/paginas/galeriaPorGenero.php";
     unset($_SESSION['busca']);
-    //$_SESSION['teste'] = [$generoId, $inicio, $qtd_itens_pag];
-    //require "./tests/tests.php";
+    $_SESSION['teste'] = $arr2;
+    require "./tests/tests.php";
     exit(); 
 }
 
@@ -229,7 +230,7 @@ if ($rota === "/favoritos") {
     exit();
 }
 //Pagina Assistir Mais Tarde
-if ($rota === "/assistir-mais-tarde") {
+if ($rota === "/salvos") {
     $controller = new FilmesController();
     if($metodo == "GET") 
         
@@ -287,12 +288,12 @@ if (substr($rota, 0, strlen("/favoritar")) ==="/favoritar"){
 }
   
 //Rota de salvar para assistir mais tarde
-if (substr($rota, 0, strlen("/assistir-mais-tarde")) ==="/assistir-mais-tarde"){
-    //$controller= new FilmesController();
-    //$controller->assistirMaisTarde(basename($rota)); //Passa apenas a base da url (id do filme) 
-    echo json_encode('ok');
-    exit();
-}
+// if (substr($rota, 0, strlen("/assistir-mais-tarde")) ==="/assistir-mais-tarde"){
+//     //$controller= new FilmesController();
+//     //$controller->assistirMaisTarde(basename($rota)); //Passa apenas a base da url (id do filme) 
+//     echo json_encode('ok');
+//     exit();
+// }
 
 //Rota de deletar
 if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){

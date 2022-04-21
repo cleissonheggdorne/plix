@@ -506,7 +506,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             <?php endif ?>
         <?php endforeach ?>
     </div>
-   
+    <div class="fundo-paginacao purple darken-1">
     <ul class="pagination container center">
         <?php if ($_GET['pagina'] >= 2) { ?>
             <li class="waves-effect"><a href="/inicio?pagina=<?= $_GET['pagina']-1 ?>"><i class="material-icons white-text">chevron_left</i></a></li>
@@ -526,6 +526,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             <li class="waves-effect"><a href="#"><i class="material-icons white-text">chevron_right</i></a></li>
         <?php } ?>
     </ul>
+    </div>
 
     </main>
 

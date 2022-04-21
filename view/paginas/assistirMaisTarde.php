@@ -23,7 +23,7 @@ $filmes = $controller->fav(['pagina'=>'assistirMaisTarde', 'id' => $_SESSION['id
         <h4 class='subtitle card-panel purple darken-2'>Conteúdo Salvo</h4>
     <div class="container">
         <div class="row">
-            <?php if (!$filmes) echo "<p class='card-panel purple lighten-3'>Não há filmes favoritados</p>" ?>
+            <?php if (!$filmes) echo "<p class='card-panel purple lighten-3'>Não há filmes salvos ainda</p>" ?>
             <?php
             foreach ($filmes as $filme) : ?>
                 <!--Percorre filme a filme-->
@@ -52,8 +52,8 @@ $filmes = $controller->fav(['pagina'=>'assistirMaisTarde', 'id' => $_SESSION['id
                                     <!-- Verificação de usuário logado e permissão de admin 1=true e 0=false-->
                                     <?php $dados = ['id_filme' => $filme->id, 'id_usuario' => $_SESSION['id_usuario']]; ?>
                                     <!--Botão favorito -->
-                                    <button class="btn-fav btn-floating halfway-fab waves-effect waves-light red" data-id="<?= urlencode(serialize($dados)) ?>">
-                                        <i class="material-icons"><?= ($controller->controlVerificaFavorito($dados)) ? "favorite" : "favorite_border" ?></i>
+                                    <button class="btn-save btn-floating halfway-fab waves-effect waves-light red" id="save-page-salvos" data-id="<?= urlencode(serialize($dados)) ?>">
+                                        <i class="material-icons"><?= ($controller->controlVerificaSalvo($dados)) ? "bookmark" : "bookmark_border" ?></i>
                                         <!--ícone Favorito-->
                                     </button>
                                 </div>
@@ -111,6 +111,34 @@ $filmes = $controller->fav(['pagina'=>'assistirMaisTarde', 'id' => $_SESSION['id
                     })
             });
         });
+
+//adicionar a lista de assistir mais tarde
+document.querySelectorAll(".btn-save").forEach(btn => {
+            btn.addEventListener("click", e => { //Mudança do texto do html para modificar o ícone
+                const id = btn.getAttribute("data-id") //informação do id do botão clicado
+                console.log(id)
+                fetch(`/assistir-mais-tarde/${id}`) //faz a solicitação favorite
+                    .then(response => response.json()) //quando tiver a resposta, converto para json
+                    //console.log(response.success)
+                    .then(response => { //após a conversão
+                        if (response.success === "ok") { //Verifico o atributo success, se OK
+                            if (btn.querySelector("i").innerHTML === "bookmark") { //Faço a troca
+                                const card = btn.closest(".col") //pegar elemento mais próximo do botão
+                                card.classList.add("fadeOut") //Adiciona classe com efeito de FadeOut
+                                setTimeout(() => card.remove(), 1000) //executa a função após certo tempo 
+                            }else {
+                               btn.querySelector("i").innerHTML = "bookmark"
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        M.toast({
+                            html: "Erro ao Salvar"
+                        })
+                    })
+            });
+        });
+
     </script>
 
 </body>

@@ -24,7 +24,7 @@ $filmes = $controller->fav(['pagina'=>'favoritos', 'id'=>$_SESSION['id_usuario']
     <div class="container">
         
         <div class="row">
-            <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes favoritados</p>" ?>
+            <?php if (!$filmes) echo "<p class='card-panel purple lighten-3'>Não há filmes favoritados</p>" ?>
             <?php
             foreach ($filmes as $filme) : ?>
                 <!--Percorre filme a filme-->

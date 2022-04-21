@@ -35,12 +35,12 @@ session_start();
                             <input class="input__senha" type="password" id="senha" name = "senha2" required>
                         </div><br>
 
-                        <div class="form-field">
+                        <!-- <div class="form-field">
                         <label>
                             <input type="checkbox" class="filled-in" checked="checked"/>
                                 <span>Lembrar</span>
                         </label>
-                        </div><br>
+                        </div><br> -->
 
                     
                         <div class="form-field center-align login-button">

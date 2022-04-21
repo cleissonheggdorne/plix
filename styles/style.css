@@ -230,6 +230,12 @@ nav ul li.active, .tab a.active {
 .btn-fav-detalhes:hover{
     color: transparent;
 }
+#save-page-salvos{
+    position: absolute;
+    right: 10px;
+    top: 10px; 
+}
+
 
 /* Botão Editar */
 .btn-edit.btn-floating.halfway-fab{
