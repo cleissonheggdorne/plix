@@ -122,6 +122,38 @@ class FilmesRepositoryPDO{
         }
         return $filmesLista;
     }
+    //Lista filmes por genero
+    public function listarPorGenero(array $dados):array{
+       
+        $filmesLista = array(); //array vazio de filmes
+        $todosSql = "SELECT * FROM filmes WHERE genero_id= :id_gen"; //Todos os registros
+        $limiteSql = "SELECT * FROM filmes WHERE genero_id=:id_gen LIMIT :inicio, :numItens"; //Registros pela quantidade de itens da página
+
+        $todos = $this->conexao->prepare($todosSql);
+        $limite = $this->conexao->prepare($limiteSql);
+        $todos->bindValue(':id_gen', $dados['id'], PDO::PARAM_INT);
+        $limite->bindValue(':id_gen', $dados['id'], PDO::PARAM_INT);
+        $limite->bindValue(':inicio', $dados['inicio'], PDO::PARAM_INT);
+        $limite->bindValue(':numItens', $dados['numItens'], PDO::PARAM_INT);
+
+        //Retorna conjunto de dados
+        $limite->execute();
+        $todos->execute(); //Todos Registros
+        $nr = $todos->rowCount(); //Retorna número de Registros
+
+        $num_paginas= $nr/$dados['numItens']; //Número de páginas
+        $num_paginas=intVal(ceil($num_paginas)); //Arredonda para cima e transforma em inteiro
+
+        array_push($filmesLista, $num_paginas); //Adiciona a primeira posição do array de filmes para ser passadp para a Galeria
+      
+        if(!$limite) return false;
+
+        while($filme = $limite->fetchObject()){ //fetchobject cria objeto utilizando os mesos nomes no banco de dados
+            array_push($filmesLista, $filme); //lista filmes 1 a 1
+        }
+        return $filmesLista;
+    }
+
     //Listar Busca
     public function listarBusca($busca):array{
         $filmesLista = array(); //array vazio de filmes
@@ -362,10 +394,16 @@ class FilmesRepositoryPDO{
          }
     }
 
-    public function listarFavoritos(int $idUsuario):array{
+    public function listarFavoritos(array $dados):array{
        
+        if($dados['pagina'] === 'favoritos'){
+            $tabela = 'filme_favorito';
+        }else if($dados['pagina'] === 'assistirMaisTarde'){
+            $tabela = 'filme_salvo';
+        }
+        $id = $dados['id'];
         $favoritosLista = array(); //array vazio de filmes favoritos
-        $sql = "SELECT * FROM filmes WHERE id IN (SELECT id_filme FROM filme_favorito WHERE id_usuario = $idUsuario)";
+        $sql = "SELECT * FROM filmes WHERE id IN (SELECT id_filme FROM $tabela WHERE id_usuario = $id)";
         
         $filmes = $this->conexao->query($sql);
         

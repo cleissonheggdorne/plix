@@ -35,6 +35,11 @@ class FilmesController{
         
     }
 
+    public function generoController(array $dados){
+        $filmesRepository = new FilmesRepositoryPDO();
+        return $filmesRepository->listarPorGenero($dados);
+    }
+
     public function atualizaDestaques($idNovo, $idAnterior){
          $filmesRepository = new FilmesRepositoryPDO();
          $result = ['success' => $filmesRepository->atualizaDestaques($idNovo, $idAnterior)];
@@ -249,9 +254,15 @@ class FilmesController{
 
     }
     //Lista favoritos por usuário
-    public function fav(int $idUsuario){
-        $filmesRepository = new FilmesRepositoryPDO();
-        return $filmesRepository->listarFavoritos($idUsuario);
+    public function fav(array $dados){
+        if($dados['pagina'] === 'assistirMaisTarde'){
+            $filmesRepository = new FilmesRepositoryPDO();
+            return $filmesRepository->listarFavoritos($dados);
+        }else if($dados['pagina'] === 'favoritos'){
+            $filmesRepository = new FilmesRepositoryPDO();
+            return $filmesRepository->listarFavoritos($dados);
+        }
+        
     }
 
     public function buscaInfoFilme(array $id){

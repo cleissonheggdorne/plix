@@ -3,7 +3,7 @@
 
 $filmesRepository = new FilmesRepositoryPDO();
 
-$file = "F:/xampp/htdocs/scrapping/lista_com_filmes_de_terror.txt";
+$file = '';//"F:/xampp/htdocs/scrapping/lista_com_filmes_de_terror.txt";
 
 if (file_exists($file)){
     if($filmesRepository->importarArquivo($file))

@@ -352,3 +352,12 @@ a:hover{
 	z-index: 9999;
 }
 
+/* Página Favoritos e Salvos */
+.save-fav{
+    margin: 0%;
+}
+
+.subtitle {
+    color: white;
+    font-size: 2.1rem;
+}

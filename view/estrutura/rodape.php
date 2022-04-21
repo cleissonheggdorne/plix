@@ -9,6 +9,7 @@
         <h5 class="white-text">Links</h5>
         <ul>
           <li><a class="grey-text text-lighten-3" href="/">Galeria</a></li>
+          <li><a class="grey-text text-lighten-3" href="/politica-e-termos">Política e Termos</a></li>
         </ul>
       </div>
     </div>

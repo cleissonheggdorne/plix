@@ -18,6 +18,12 @@ $pagina_atual= filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_NUMBER_INT);
 // //Calcular o início visualização
  $inicio = ($qtd_itens_pag*$pagina)-$qtd_itens_pag;
 
+//Política e termos
+if($rota === '/politica-e-termos'){
+    require "./view/paginas/politicaDePrivacidade.php";
+    exit;
+}
+
 //Página de Login
 if (substr($rota, 0, strlen("/login"))  === "/login") {
     $controller = new FilmesController();
@@ -103,8 +109,18 @@ if ($rota === "/"
     $_SESSION['filmes'] = $controller->index($qtd_itens_pag, $inicio);
     require "./view/paginas/galeria.php";
     unset($_SESSION['busca']);
-    exit();
-    
+    exit(); 
+}
+//Pagina Filmes por Genero
+if (substr($rota, 0, strlen("/genero/")) === "/genero/") {
+    $generoId= filter_input(INPUT_GET, 'genero', FILTER_SANITIZE_NUMBER_INT);
+    $controller = new FilmesController();
+    $_SESSION['filmes'] = $controller->generoController(['id'=>$generoId, 'inicio'=>$inicio, 'numItens' => $qtd_itens_pag]);
+    require "./view/paginas/galeriaPorGenero.php";
+    unset($_SESSION['busca']);
+    //$_SESSION['teste'] = [$generoId, $inicio, $qtd_itens_pag];
+    //require "./tests/tests.php";
+    exit(); 
 }
 
 //Pagina de Controle
@@ -208,6 +224,21 @@ if ($rota === "/favoritos") {
                 require "./view/paginas/favoritos.php";
         }else
             $_SESSION['msg'] = "Entre para visualizar seus Favoritos";
+            header("location: /");
+
+    exit();
+}
+//Pagina Assistir Mais Tarde
+if ($rota === "/assistir-mais-tarde") {
+    $controller = new FilmesController();
+    if($metodo == "GET") 
+        
+        if (isset($_SESSION['usuario'])){
+            if($controller->verificaUsuario($_SESSION['usuario']))
+                $logado = true;
+                require "./view/paginas/assistirMaisTarde.php";
+        }else
+            $_SESSION['msg'] = "Entre para visualizar suas mídias salvas";
             header("location: /");
 
     exit();

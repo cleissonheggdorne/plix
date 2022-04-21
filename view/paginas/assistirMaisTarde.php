@@ -8,7 +8,7 @@ session_start();
 
 
 $controller = new FilmesController();
-$filmes = $controller->fav(['pagina'=>'favoritos', 'id'=>$_SESSION['id_usuario']]);
+$filmes = $controller->fav(['pagina'=>'assistirMaisTarde', 'id' => $_SESSION['id_usuario']]);
 
 
 ?>
@@ -20,11 +20,10 @@ $filmes = $controller->fav(['pagina'=>'favoritos', 'id'=>$_SESSION['id_usuario']
         REQUIRE "./view/estrutura/sidenav-e-menuMobile.php"; 
     ?>
     <section class='card-panel save-fav purple lighten-3'>
-    <h4 class='subtitle card-panel purple darken-2'>Favoritos</h4>
+        <h4 class='subtitle card-panel purple darken-2'>Conteúdo Salvo</h4>
     <div class="container">
-        
         <div class="row">
-            <?php if (!$filmes) echo "<p class='card-panel red lighten-4'>Não há filmes favoritados</p>" ?>
+            <?php if (!$filmes) echo "<p class='card-panel purple lighten-3'>Não há filmes favoritados</p>" ?>
             <?php
             foreach ($filmes as $filme) : ?>
                 <!--Percorre filme a filme-->

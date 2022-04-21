@@ -7,6 +7,7 @@
     var carrossel_destaques = document.querySelectorAll('.carousel');
     var parallax = document.querySelectorAll('.parallax');
     var dropdown = document.querySelectorAll('.dropdown-trigger');
+    var tabs     = document.querySelectorAll('.tabs');
 
     var instances_nvFilme = M.Modal.init(nvFilme);
     var instances_importEmMassa = M.Modal.init(importEmMassa);
@@ -18,6 +19,7 @@
         coverTrigger:false,
         hover:true
     });
+    var instance_tabs = M.Tabs.init(tabs);
 });
 
 // Sair
