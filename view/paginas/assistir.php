@@ -41,7 +41,9 @@ $infoFilme = $dados['dados'];
         <div class="divider transparent"></div>
                
                     <!--Define tamanho dos cards de acordo com o tamanho da coluna-->
+                    
                         <div class="row container valign-wrapper">
+                        <div class="row">
                             <div class="col s12 m6 l6 xl6">
                                 <!-- Imagem do pôster-->
                                 <div class="card-image assistir">
@@ -53,7 +55,7 @@ $infoFilme = $dados['dados'];
                             <!--Sinopse -->
                             <div class="col s12 m6 l6 xl6">
                                 <div class="col s12 m12 l12 xl12">
-                                    <div class="card">
+                                    <div class="card sinopse">
                                         <div class="card-content">
                                             <div class="btn-nota-assistir halfway-fab valign-wrapper">
                                                 <!--Classe para alinhamento de elementos-->
@@ -78,8 +80,8 @@ $infoFilme = $dados['dados'];
                                 </div>
                                 <!-- Assistir mais tarde e Favorito -->
                                 <div class="col s12 m12 l12 xl12">
-                                        <!-- card com botões Favorito e Salvar -->
-                                        <div class="card-panel purple darken-3 botoes-save-favorito">
+                                    <!-- card com botões Favorito e Salvar -->
+                                    <div class="card-panel purple darken-3 botoes-save-favorito">
                                         <div class="valign-wrapper">
                                         <?php $dados_fav_e_save = ['id_filme'=>$info->id, 'id_usuario'=> $_SESSION['id_usuario']];?>
                                             <!-- <a href="#" class="btn-save material-icons white-text hoverable" id="save" data-id="-->
@@ -91,6 +93,7 @@ $infoFilme = $dados['dados'];
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         </div>
                 <?php endforeach ?>
             <div class="divider transparent"></div>

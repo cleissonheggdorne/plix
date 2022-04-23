@@ -358,7 +358,8 @@ class FilmesRepositoryPDO{
     }
 
     public function buscaDestaques(){
-        $sql = "SELECT * FROM busca_destaque";
+        //$sql = "SELECT * FROM busca_destaque";
+        $sql = "SELECT id, titulo, img_wide_1 FROM filmes WHERE destaque = true LIMIT 5";
         $stmt = $this->conexao->prepare($sql);
         $retornoDestaques = array();
         try{

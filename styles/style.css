@@ -50,12 +50,18 @@ main {
 
 /* conteudo tela inicial */
 @media screen and (min-width: 0px) {
+    
+    /* Pagina de Assistir */
+    .image-assistir{
+        max-height: 180px;
+        border-radius: 10px;
+    }
     .poster-filmes{
         display: grid;
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
     #card-filme{
-        width: 500px;
+        width: 180px;
         align-content: center;
         grid-column-start: auto;
         grid-column-end: auto;
@@ -64,6 +70,11 @@ main {
 }
 /* conteudo tela inicial */
 @media screen and (min-width: 450px) {
+    /* Card filme pequeno em massa*/
+    #card-filme{
+        width: 150px;
+        align-self: center;
+    }
     .poster-filmes{
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -72,6 +83,12 @@ main {
 }
 
 @media screen and (min-width: 600px) {
+   
+    /* Card filme pequeno em massa*/
+    #card-filme{
+        width: 150px;
+        align-self: center;
+    }
     .poster-filmes{
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -79,28 +96,43 @@ main {
 }
 
 @media screen and (min-width: 750px) {
+   
+    /* Card filme pequeno em massa*/
+    #card-filme{
+        width: 150px;
+        align-self: center;
+    }
     .poster-filmes{
         display: grid;
         grid-template-columns: repeat(5, 1fr);
     }
 }
 @media screen and (min-width: 900px) {
+   
+    /* Card filme pequeno em massa*/
+    #card-filme{
+        width: 150px;
+        align-self: center;
+    }
     .poster-filmes {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
     }
   } 
  @media screen and (min-width: 1098px) {
+    
+     /* Card filme pequeno em massa*/
+    #card-filme{
+        width: 150px;
+        align-self: center;
+    }
     .poster-filmes {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
     }
+    
 }  
-/* Card filme pequeno em massa*/
-#card-filme{
-    width: 150px;
-    align-self: center;
-}
+
 
 /* Parallax */
 .parallax-container {
@@ -158,11 +190,10 @@ nav ul li.active, .tab a.active {
 }
 
 /* Pagina de Assistir */
-
-.image-assistir{
+ .image-assistir{
     max-height: 450px;
     border-radius: 10px;
-}
+} 
 
 .section.apresentacao-filme{
     background-size: cover;

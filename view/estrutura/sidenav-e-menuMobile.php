@@ -47,7 +47,9 @@
             <li><a href="#"><i class="material-icons">face</i><b><?= $_SESSION['usuario'] ?></b></a></li>
             <li><a href="/favoritos"><i class="material-icons">star</i>Favoritos</a></li>
             <li><a href="/salvos"><i class="material-icons">bookmark</i>Salvos</a></li>
-            <li><a href="/syscontrol"><i class="material-icons">build</i>Painel de Controle</a></li>
+            <?php if ($_SESSION['usuario'] != "" && $_SESSION['admin'] == true) : ?>
+                <li><a href="/syscontrol"><i class="material-icons">build</i>Painel de Controle</a></li>
+            <?php endif ?>
             <li><a onclick="sair()" href="#"><i class="material-icons">logout</i>Sair</a></li>
         <?php } else { ?>
             <li class="purple darken-2"><a href="/login">Entrar</a></li>
