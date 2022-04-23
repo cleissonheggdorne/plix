@@ -13,7 +13,14 @@ class Conexao{
             $database = "host=$server;dbname=$database";
         }
 
-        return new PDO("$databaseType:$database", $user, $pass); //PDO objeto que permite acesso a diversos bancos de dados da mesma maneira
+       // return new PDO("$databaseType:$database", $user, $pass); //PDO objeto que permite acesso a diversos bancos de dados da mesma maneira
+       try {
+        $conn = new PDO("$databaseType:$database", $user, $pass); //PDO objeto que permite acesso a diversos bancos de dados da mesma maneira
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $conn;
+        } catch(PDOException $e) {
+                echo 'ERROR: ' . $e->getMessage();
+        }
     }
 }
 
