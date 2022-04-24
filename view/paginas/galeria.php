@@ -16,7 +16,11 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
 }
 
 ?>
-
+<head>
+    <meta name="description" content="Assistir filmes online gratis a qualquer momento e qualquer hora.">
+    <meta name="keywords" content="filmes, filmes online, assistir filmes, filmes hd, melhores filmes, filmes <?=date ("Y") ?>, filmes lancamento">
+    <title>Plix - Assista a Filmes na Web em HD, Online e Grátis (<?=date ("Y") ?>)</title>
+</head>
 <body class="purple darken-1">
 
    <?php
@@ -29,8 +33,8 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
     <div class="carousel">
         <?php foreach($destaques as $destaque) :?>
             <a class="carousel-item hoverable" href="/assistir/<?= str_replace(' ', '-', $destaque->titulo) . "?id=" . ($destaque->id) ?>">
-                <img src="<?= (str_contains($destaque->img_wide_1, 'imagens/posters')) ?  '/' . $destaque->img_wide_1 : $destaque->img_wide_1 ?>">
-                <h3><?= $destaque->titulo ?></h3>
+                <img id="img-carrossel" src="<?= (str_contains($destaque->img_wide_1, 'imagens/posters')) ?  '/' . $destaque->img_wide_1 : $destaque->img_wide_1 ?>">
+                <h3 class = "title-destaque"><?= $destaque->titulo ?></h3>
             </a>
         <?php endforeach ?>
     </div>       

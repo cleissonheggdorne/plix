@@ -14,7 +14,11 @@ $filmes = $controller->index(20, 0);
 $dados = $controller->buscaInfoFilme(['pag_assistir'=>$_GET['id']]);
 $infoFilme = $dados['dados'];
 ?>
-
+<head>
+    <meta name="keywords" content="<?= $infoFilme[0]->titulo?>, filmes,  filmes online, assistir filmes, filmes hd, melhores filmes, filmes <?=date ("Y") ?>, filmes lancamento"> 
+    <title>Assistir  a: <?= $infoFilme[0]->titulo?> HD Online Grátis</title>
+    <meta name="description" content="Assista a <?= $infoFilme[0]->titulo?>. Assistir ao Filme Completo, Online, Gratis, Dublado/Legendado" > 
+</head>
 <body>
 
     <?php

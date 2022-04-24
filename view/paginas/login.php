@@ -22,21 +22,12 @@ require_once "./util/mensagem.php";
                             <label for="username">Usuário</label>
                             <input class="input__usuario" type="email" id="usuario" name = "usuario" required>
                         </div><br>
-                    
 
                         <div class="form-field">
                             <label for="senha">Senha</label>
                             <input class="input__senha" type="password" id="senha" name = "senha" required>
                         </div><br>
 
-                        <!-- <div class="form-field">
-                        <label>
-                            <input type="checkbox" class="filled-in" checked="checked"/>
-                                <span>Lembrar</span>
-                        </label>
-                        </div><br> -->
-
-                    
                         <div class="form-field center-align login-button">
                             <button class="btn-large waves-effect waves-light btn purple btn-login" type="submit">Login</button>
                         </div>

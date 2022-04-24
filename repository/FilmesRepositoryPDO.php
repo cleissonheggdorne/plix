@@ -27,10 +27,8 @@ class FilmesRepositoryPDO{
             $stmt_sit_user->bindValue(':id_sit',$dadosRetornados['sit_usuario_id'], PDO::PARAM_INT);
             $stmt_sit_user->execute();
             $sit_retornada = $stmt_sit_user->fetch(PDO::FETCH_ASSOC);
-            //if(isset($dadosRetornados['sit_usuario_id']))
             return ['situacao'=> $sit_retornada['nome_situacao'], 'dados'=>$dadosRetornados];
-            //}else
-              //  return ['dados'=>$dadosRetornados];
+            
         }else{
             return ['dados'=>false];
         }

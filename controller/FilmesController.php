@@ -56,7 +56,7 @@ class FilmesController{
         $dados = (object) $request;
 
         $dadosUsuario = $filmesRepository->validar($dados);
-        if( isset($dadosUsuario['situacao']) ) //Executa a instrução verificando se TRUE//
+        if( $dadosUsuario['dados']!== false) //Executa a instrução verificando se TRUE//
             return $dadosUsuario;
         else{
             return false;
