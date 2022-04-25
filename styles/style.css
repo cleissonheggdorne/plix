@@ -82,6 +82,20 @@ main {
     .carousel{
         height: 250px;
     }
+    /* titulo do destaque */
+    .title-destaque{
+        font-size: 1.1em;
+        background: rgba(0, 0, 0, 0.755);
+        position: absolute;
+        bottom: 40px;
+        left: 15px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-right: 5px;
+        padding-left: 5px;
+        border-top-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
     
 }
 /* conteudo tela inicial */
@@ -104,7 +118,25 @@ main {
     .carousel{
         height: 400px;
     }
-    
+    /* titulo do destaque */
+    .title-destaque{
+        font-size: 1.5em;
+        background: rgba(0, 0, 0, 0.755);
+        position: absolute;
+        bottom: -40px;
+        left: 15px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-right: 5px;
+        padding-left: 5px;
+        border-top-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+    /* Modal Redefinir Senha */
+    #modal-redefinir-senha{
+        width: 400px;
+        height: 350px;
+    }
 }
 
 @media screen and (min-width: 600px) {
@@ -198,7 +230,6 @@ main {
     }
 }  
 
-
 /* Parallax */
 .parallax-container {
     display: flex;
@@ -210,15 +241,8 @@ main {
 
 .carousel .carousel-item h3{
     margin: -10px 0 0;
-    /* background: rgba(0, 0, 0, 0.755); */
     color:rgb(255, 255, 255);
-    font-size: 1.5em;
     text-align: center;
-}
-
-.title-destaque{
-    background: rgba(0, 0, 0, 0.755);
-    
 }
 
 /* Parallax */

@@ -50,6 +50,16 @@ class FilmesRepositoryPDO{
             return false;
         }
     }
+    
+    public function geraChaveParaRedefinirSenha($usuario){
+        $sql = "UPDATE usuario SET chave = :chave WHERE usuario = :usuario";    
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bindValue(':usuario', $usuario, PDO::PARAM_STR); 
+        $chave = password_hash($usuario.date("Y/m/d H:i:s"), PASSWORD_DEFAULT);
+        $stmt->bindValue(':chave', $chave, PDO::PARAM_STR);
+        
+        return ['pass'=>$stmt->execute(), 'chave'=>$chave];
+    }
 
     public function salvarUsuario($usuario):array{
         

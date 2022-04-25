@@ -1,6 +1,9 @@
 <?php 
 
-session_start();
+if(isset($_SESSION)){
+    session_start(); 
+}
+
 
 REQUIRE "./repository/FilmesRepositoryPDO.php";
 // REQUIRE "./model/Filme.php";
@@ -54,12 +57,37 @@ class FilmesController{
     public function validate($request){
         $filmesRepository = new FilmesRepositoryPDO();
         $dados = (object) $request;
-
+        
         $dadosUsuario = $filmesRepository->validar($dados);
         if( $dadosUsuario['dados']!== false) //Executa a instrução verificando se TRUE//
             return $dadosUsuario;
         else{
             return false;
+        }
+    }
+    //Recebe email 
+    public function redefinirSenha(String $email){
+        $filmesRepository = new FilmesRepositoryPDO();
+        //Verifica se usuario (email) está cadastrado na base. 
+        $dados = $filmesRepository->verificaCadastroExistente($email);
+        if($dados === true){
+            //Se o cadastro existe gera uma chave e retorna a situação da execucao do sql e a chave gerada
+            $dadosRetorno = $filmesRepository->geraChaveParaRedefinirSenha($email);
+            if($dadosRetorno['pass'] AND $dadosRetorno['chave'] !== ""){
+                $confirmaEmail = new ConfirmacaoEmail();
+                $result = $confirmaEmail->disparaEmailDeRecuperacao(['chave'=>$dadosRetorno['chave'], 'usuario'=>$email]);
+                if($result['msg'] === "ok"){
+                    $_SESSION['msg'] = 'Enviamos um email de recuperação para '.$email.".";
+                    header('Location: /login');
+                    
+                }else{
+
+                }
+            }
+        }else{
+            $_SESSION['msg'] = 'Não localizamos esse email na nossa base de dados!';
+            header('Location: /login');
+           
         }
     }
 
@@ -70,7 +98,7 @@ class FilmesController{
         if($retorno['pass']){  //Executa a instrução//
             $chave = $retorno['chave'];
             $confirmaEmail = new ConfirmacaoEmail();
-            $result = $confirmaEmail->disparaEmail(['chave'=>$chave, 'usuario'=>$usuario->usuario]);
+            $result = $confirmaEmail->disparaEmailDeConfirmacao(['chave'=>$chave, 'usuario'=>$usuario->usuario]);
             
             if($result['msg'] === "ok")
                 $_SESSION["msg"] = "Usuário cadastrado. Verifique sua caixa de email antes de logar.";
@@ -301,5 +329,3 @@ class FilmesController{
     }
 
 }
-
-?>

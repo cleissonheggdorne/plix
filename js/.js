@@ -8,6 +8,7 @@
     var parallax = document.querySelectorAll('.parallax');
     var dropdown = document.querySelectorAll('.dropdown-trigger');
     var tabs     = document.querySelectorAll('.tabs');
+    var redefinirSenha = document.getElementById('modal-redefinir-senha');
 
     var instances_nvFilme = M.Modal.init(nvFilme);
     var instances_importEmMassa = M.Modal.init(importEmMassa);
@@ -20,6 +21,7 @@
         hover:true
     });
     var instance_tabs = M.Tabs.init(tabs);
+    var redefinir_senha = M.Modal.init(redefinirSenha); //modal redefinir senha
 });
 
 // Sair

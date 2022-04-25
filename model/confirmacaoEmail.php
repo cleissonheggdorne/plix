@@ -13,8 +13,9 @@ require 'lib/vendor/autoload.php';
 class ConfirmacaoEmail{
     public function disparaEmail($dados){
         $mail = new PHPMailer(true);
-        $chave = $dados['chave'];
+        //$chave = $dados['chave'];
         $usuario = $dados['usuario'];
+        
         try{
             //Server settings
             //$mail->SMTPDebug = SMTP::DEBUG_SERVER; //só em desenvolvimento                      //Enable verbose debug output
@@ -37,17 +38,17 @@ class ConfirmacaoEmail{
             
             //Content
             $mail->isHTML(true);   //Set email format to HTML
-            $mail->Subject = 'PLIX Confirmação de e-mail';
-            $mail->Body    = "Agradecemos o cadastro ao nosso site. <br><br>
-            Falta pouco para você aproveitar os melhores filmes gratuitamente,
-            basta clicar no link abaixo para confirmar seu email.<br><br> <a href='http://localhost:8080/login?chave=$chave'>Confirma Email</a><br>
-            Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
-            <br> ";
-            $mail->AltBody = "Agradecemos o cadastro ao nosso site. \n\n
-            Falta pouco para você aproveitar os melhores filmes gratuitamente,
-            basta clicar no link abaixo para confirmar seu email.\n\n http://localhost:8080/login?chave=$chave \n\n
-            Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
-            \n ";
+            $mail->Subject = $dados['assunto'];//'PLIX Confirmação de e-mail';
+            $mail->Body    = $dados['conteudo'];//"Agradecemos o cadastro ao nosso site. <br><br>
+            // Falta pouco para você aproveitar os melhores filmes gratuitamente,
+            // basta clicar no link abaixo para confirmar seu email.<br><br> <a href='http://localhost:8080/login?chave=$chave'>Confirma Email</a><br>
+            // Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
+            // <br> ";
+            $mail->AltBody = $dados['conteudoAlternativo'];//"Agradecemos o cadastro ao nosso site. \n\n
+            //Falta pouco para você aproveitar os melhores filmes gratuitamente,
+            //basta clicar no link abaixo para confirmar seu email.\n\n http://localhost:8080/login?chave=$chave \n\n
+            //Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
+            //\n ";
 
             $mail->send();
             return ['msg'=>"ok"];
@@ -59,5 +60,44 @@ class ConfirmacaoEmail{
             //$_SESSION["msg"] = "{$mail->ErrorInfo}";
             return ['msg'=>$mail->ErrorInfo];
         }
+    }
+
+    public function disparaEmailDeConfirmacao($dados){
+        $chave = $dados['chave'];
+        $usuario = $dados['usuario'];
+
+        $assunto = "PLIX Confirmação de e-mail";
+        $conteudo = "Agradecemos o cadastro ao nosso site. <br><br>
+        Falta pouco para você aproveitar os melhores filmes gratuitamente,
+        basta clicar no link abaixo para confirmar seu email.<br><br> <a href='http://localhost:8080/login?chave=$chave'>Confirma Email</a><br>
+        Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
+        <br> ";
+        $conteudoAlternativo = "Agradecemos o cadastro ao nosso site. \n\n
+        Falta pouco para você aproveitar os melhores filmes gratuitamente,
+        basta clicar no link abaixo para confirmar seu email.\n\n http://localhost:8080/login?chave=$chave \n\n
+        Você está recebendo este email do site PLIX. Ele serve puramente para confirmação da existência do email cadastrado na nossa plataforma.
+        \n ";
+
+        return $this->disparaEmail(['usuario'=>$usuario,'assunto'=>$assunto, 'conteudo'=>$conteudo, 'conteudoAlternativo'=>$conteudoAlternativo]);
+    }
+
+    public function disparaEmailDeRecuperacao($dados){
+        $chave = $dados['chave'];
+        $usuario = $dados['usuario'];
+
+        $assunto = "PLIX - Solicitação Para Redefinir Senha";
+        $conteudo = "Olá, parece que está tendo problemas com o login em nosso site? <br>
+                    Clique no link logo abaixo e você será redirecionado para uma página <br>
+                    onde poderá efetuar a mudança da sua senha <br><br>
+                    <a href='http://localhost:8080/redefinir-senha?chave=$chave'>Redefinir Senha</a><br><br>
+                    Este email tem o intuito único e exclusivo de redefinição de senha. <br>
+                    NÃO RESPONDER!";
+        $conteudoAlternativo = "Olá, parece que está tendo problemas com o login em nosso site? \n
+                    Clique no link logo abaixo e você será redirecionado para uma página \n
+                    onde poderá efetuar a mudança da sua senha \n\n
+                    <a href='http://localhost:8080/redefinir-senha?chave=$chave'>Redefinir Senha</a><\n\n
+                    Este email tem o intuito único e exclusivo de redefinição de senha. \n
+                    NÃO RESPONDER!";
+        return $this->disparaEmail(['usuario'=>$usuario,'assunto'=>$assunto, 'conteudo'=>$conteudo, 'conteudoAlternativo'=>$conteudoAlternativo]);
     }
 }

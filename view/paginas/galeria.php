@@ -2,9 +2,12 @@
 ?>
 
 <?php
+if(!isset($_SESSION)) 
+{ 
+    session_start(); 
+}
 
 require_once "./util/mensagem.php";
-session_start();
 $filmesController = new FilmesController();
 $destaques = $filmesController->destaques();
 
@@ -34,7 +37,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
         <?php foreach($destaques as $destaque) :?>
             <a class="carousel-item hoverable" href="/assistir/<?= str_replace(' ', '-', $destaque->titulo) . "?id=" . ($destaque->id) ?>">
                 <img id="img-carrossel" src="<?= (str_contains($destaque->img_wide_1, 'imagens/posters')) ?  '/' . $destaque->img_wide_1 : $destaque->img_wide_1 ?>">
-                <h3 class = "title-destaque"><?= $destaque->titulo ?></h3>
+                <h3 class="title-destaque"><?= $destaque->titulo ?></h3>
             </a>
         <?php endforeach ?>
     </div>       

@@ -1,5 +1,8 @@
 <?php
-ini_set('display_errors', 0);
+session_start(); 
+
+//ini_set('display_errors', 0);
+
 require "./controller/FilmesController.php";
 
 $rota = $_SERVER["REQUEST_URI"];
@@ -28,14 +31,14 @@ if($rota === '/politica-e-termos'){
 if (substr($rota, 0, strlen("/login"))  === "/login") {
     $controller = new FilmesController();
     if($metodo == "GET") 
+        
         $chave = filter_input(INPUT_GET, "chave", FILTER_SANITIZE_STRING);
         if (isset($_SESSION['usuario'])){
             if ($controller->verificaUsuario($_SESSION['usuario'])){
                 $logado = true;
                 header("location: /");
             }
-        }    
-        if(isset($chave)){
+        }else if(isset($chave)){
             unset($_SESSION['usuario']);
             $controller = new FilmesController();
             $controller->confirmaEmail($chave);
@@ -43,27 +46,32 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
             require "./view/paginas/login.php";
 
     if($metodo == "POST") {
-        $result = $controller->validate($_REQUEST);
-        
-        if($result){ //false or user
-            $logado = true;
-            if($result['situacao'] === 'ativo'){
-                $_SESSION['usuario'] = $result['dados']['usuario'];
-                $_SESSION['id_usuario'] = $result['dados']['id'];
-                $_SESSION['admin'] = $result['dados']['admin'];
-                if(isset($_SESSION['usuario']))
-                    if($controller->verificaUsuario($_SESSION['usuario']))
-                        $_SESSION['msg'] = "Seja Bem Vindo!";
-                        header("location: /");
-            }else if ($result['situacao'] === "aguardando confirmação"){
-                $_SESSION['msg'] = "Ops, precisamos que confirme seu email!";
+        if(isset($_REQUEST['email_redefinir']) AND $_REQUEST['email_redefinir'] !== ""){
+            $controller = new FilmesController();
+            $controller->redefinirSenha($_REQUEST['email_redefinir']);
+        }else{
+            $controller = new FilmesController();
+            $result = $controller->validate($_REQUEST);    
+            if($result){ //false or user
+                $logado = true;
+                if($result['situacao'] === 'ativo'){
+                    $_SESSION['usuario'] = $result['dados']['usuario'];
+                    $_SESSION['id_usuario'] = $result['dados']['id'];
+                    $_SESSION['admin'] = $result['dados']['admin'];
+                    if(isset($_SESSION['usuario']))
+                        if($controller->verificaUsuario($_SESSION['usuario']))
+                            $_SESSION['msg'] = "Seja Bem Vindo!";
+                            header("location: /");
+                }else if ($result['situacao'] === "aguardando confirmação"){
+                    $_SESSION['msg'] = "Ops, precisamos que confirme seu email!";
+                    header("location: /login");
+                }
+            }else{
+                $_SESSION['msg'] = "Email ou Senha Incorretos";
                 header("location: /login");
             }
-        }else{
-            $_SESSION['msg'] = "Email ou Senha Incorretos";
-            header("location: /login");
         }
-    };
+    }
     exit();
 }
 
@@ -318,5 +326,3 @@ if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
 //}
 
 require "./view/paginas/404.php";
-
-?>
