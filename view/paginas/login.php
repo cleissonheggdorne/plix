@@ -1,13 +1,10 @@
 <?php
-
 if(isset($_SESSION)){
     session_start(); 
 }
 
 include "./view/estrutura/cabecalho.php";
-require_once "./util/mensagem.php";
-?>
-
+require_once "./util/mensagem.php";?>
 <body class="purple darken-1 main">
 
     <div class="row login">

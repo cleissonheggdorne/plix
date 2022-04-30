@@ -15,7 +15,7 @@ class Conexao{
 
        // return new PDO("$databaseType:$database", $user, $pass); //PDO objeto que permite acesso a diversos bancos de dados da mesma maneira
        try {
-        $conn = new PDO("$databaseType:$database", $user, $pass); //PDO objeto que permite acesso a diversos bancos de dados da mesma maneira
+        $conn = new PDO("$databaseType:$database", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")); //PDO objeto que permite acesso a diversos bancos de dados da mesma maneira
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conn;
         } catch(PDOException $e) {

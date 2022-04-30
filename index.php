@@ -37,6 +37,7 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
             if ($controller->verificaUsuario($_SESSION['usuario'])){
                 $logado = true;
                 header("location: /");
+                die();
             }
         }else if(isset($chave)){
             unset($_SESSION['usuario']);
@@ -62,13 +63,16 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
                         if($controller->verificaUsuario($_SESSION['usuario']))
                             $_SESSION['msg'] = "Seja Bem Vindo!";
                             header("location: /");
+                            die();
                 }else if ($result['situacao'] === "aguardando confirmação"){
                     $_SESSION['msg'] = "Ops, precisamos que confirme seu email!";
                     header("location: /login");
+                    die();
                 }
             }else{
                 $_SESSION['msg'] = "Email ou Senha Incorretos";
                 header("location: /login");
+                die();
             }
         }
     }
@@ -92,11 +96,13 @@ if ($rota === "/cadastro-de-usuario") {
             $_SESSION['usuarioCadastro'] = $usuario->usuario;
             $_SESSION['msg'] = 'Senhas não correspondem';
             header("location: /cadastro-de-usuario");
+            die();
         //Verifica se usuário já não existe (email)
         }else if($controller->verificaDadosUsuario($_REQUEST) == $usuario->usuario){
             $_SESSION['usuarioCadastro'] = $usuario->usuario;
             $_SESSION['msg'] = 'Usuário já cadastrado';
             header("location: /cadastro-de-usuario");
+            die();
         }
         
     exit();
@@ -234,6 +240,7 @@ if ($rota === "/favoritos") {
         }else
             $_SESSION['msg'] = "Entre para visualizar seus Favoritos";
             header("location: /");
+            die();
 
     exit();
 }
@@ -249,6 +256,7 @@ if ($rota === "/salvos") {
         }else
             $_SESSION['msg'] = "Entre para visualizar suas mídias salvas";
             header("location: /");
+            die();
 
     exit();
 }
@@ -260,11 +268,13 @@ if (substr($rota, 0, strlen("/assistir")) ==="/assistir"){
         $controller= new FilmesController();
         $controller->assistirMaisTarde(basename($rota)); //Passa apenas a base da url (id do filme) 
         exit();
-    }else if(isset($busca) && $busca != "")
+    }else if(isset($busca) && $busca != ""){
         header("location: /?busca=$busca");
-    else
+        die();
+    }else{
         require "./view/paginas/assistir.php";
-     exit();
+        exit();
+    }
  }
 
 //Pagina Editar
