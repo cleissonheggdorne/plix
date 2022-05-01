@@ -4,7 +4,9 @@
 <?php
 
 require_once "./util/mensagem.php";
-session_start();
+if(!isset($_SESSION)){
+    session_start(); 
+}
 $filmesController = new FilmesController();
 $destaques = $filmesController->destaques();
 //$idDestaque;

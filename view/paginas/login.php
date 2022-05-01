@@ -1,5 +1,5 @@
 <?php
-if(isset($_SESSION)){
+if(!isset($_SESSION)){
     session_start(); 
 }
 
@@ -59,7 +59,7 @@ require_once "./util/mensagem.php";?>
             <!--Início Form-->
             <div class="modal-content">
                 <span class="card-title blcak-text">Redefinir Senha</span>
-                <form method="POST">
+                <!-- <form method="POST"> -->
                     <div class="row">
                         <div class="col s12 m12 l12">
                             <div class="card-content">
@@ -67,16 +67,16 @@ require_once "./util/mensagem.php";?>
                                     e lhe enviaremos uma mensagem que contém um link para que possa redefinir sua senha.
                                 </p>
                             </div>
-                            <input id="email" type="email" class="validate" name="email_redefinir" value="" required>
+                            <input id="id_input_email_recupera" type="email" class="validate" name="email_redefinir" required>
                             <label for="email">Email de Cadastro</label>
                         </div>
                     </div>
             </div>
             <div class="modal-footer">
                 <a class="waves-effect waves-light btn grey" href="/login">Cancelar</a>
-                <button type="submit" class="waves-effect waves-light btn purple">Enviar</a>
+                <button onclick="redefinirSenha()" type="" class="modal-close waves-effect waves-light btn purple">Enviar</a>
             </div>
-            </form>
+            <!-- </form> -->
         </div>
     </div>
 

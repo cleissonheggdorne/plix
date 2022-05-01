@@ -1,7 +1,10 @@
 <?php
-session_start(); 
+if(!isset($_SESSION)){
+    session_start(); 
+}
 
-//ini_set('display_errors', 0);
+
+ini_set('display_errors', 0);
 
 require "./controller/FilmesController.php";
 
@@ -31,7 +34,12 @@ if($rota === '/politica-e-termos'){
 if (substr($rota, 0, strlen("/login"))  === "/login") {
     $controller = new FilmesController();
     if($metodo == "GET") 
-        
+        $email = filter_input(INPUT_GET, 'recupera',FILTER_SANITIZE_EMAIL);
+        if(isset($email)){
+            $controller = new FilmesController();
+            $controller->redefinirSenha($email);
+            exit();
+        }
         $chave = filter_input(INPUT_GET, "chave", FILTER_SANITIZE_STRING);
         if (isset($_SESSION['usuario'])){
             if ($controller->verificaUsuario($_SESSION['usuario'])){
@@ -47,10 +55,12 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
             require "./view/paginas/login.php";
 
     if($metodo == "POST") {
-        if(isset($_REQUEST['email_redefinir']) AND $_REQUEST['email_redefinir'] !== ""){
-            $controller = new FilmesController();
-            $controller->redefinirSenha($_REQUEST['email_redefinir']);
-        }else{
+            // $email = filter_input(INPUT_GET, 'recupera',FILTER_SANITIZE_EMAIL);
+            // if(isset($email)){
+            //     $controller = new FilmesController();
+            //     $controller->redefinirSenha($email);
+            //     exit();
+            // }
             $controller = new FilmesController();
             $result = $controller->validate($_REQUEST);    
             if($result){ //false or user
@@ -75,7 +85,7 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
                 die();
             }
         }
-    }
+    
     exit();
 }
 

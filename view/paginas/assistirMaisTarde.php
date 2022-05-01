@@ -4,7 +4,9 @@
 <?php
 //session_destroy();
 require "./util/mensagem.php";
-session_start();
+if(!isset($_SESSION)){
+    session_start(); 
+}
 
 
 $controller = new FilmesController();

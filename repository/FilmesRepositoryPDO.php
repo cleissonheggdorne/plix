@@ -30,7 +30,7 @@ class FilmesRepositoryPDO{
             return ['situacao'=> $sit_retornada['nome_situacao'], 'dados'=>$dadosRetornados];
             
         }else{
-            return ['dados'=>false];
+            return ['situacao'=>false, 'dados'=>false];
         }
         
     }  

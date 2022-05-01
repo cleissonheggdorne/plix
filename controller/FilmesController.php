@@ -1,6 +1,6 @@
 <?php 
 
-if(isset($_SESSION)){
+if(!isset($_SESSION)){
     session_start(); 
 }
 
@@ -77,17 +77,20 @@ class FilmesController{
                 $confirmaEmail = new ConfirmacaoEmail();
                 $result = $confirmaEmail->disparaEmailDeRecuperacao(['chave'=>$dadosRetorno['chave'], 'usuario'=>$email]);
                 if($result['msg'] === "ok"){
-                    $_SESSION['msg'] = 'Enviamos um email de recuperação para '.$email.".";
-                    header('Location: /login');
+                    $result['msg'] = 'Enviamos um email de recuperação para o email recuperado!';
+                    header('Content-type: application/json');
+                    echo json_encode($result['msg']);
                     
                 }else{
-
+                    $result['msg'] = 'Ocorreu um problema, tente novamente!';
+                    header('Content-type: application/json');
+                    echo json_encode($result['msg']);
                 }
             }
         }else{
-            $_SESSION['msg'] = 'Não localizamos esse email na nossa base de dados!';
-            header('Location: /login');
-           
+            $result['msg'] = 'Não localizamos esse email na nossa base de dados!';
+            header('Content-type: application/json');
+            echo json_encode($result['msg']);
         }
     }
 
