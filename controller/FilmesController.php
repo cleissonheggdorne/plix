@@ -5,14 +5,14 @@ if(!isset($_SESSION)){
     session_start(); 
 }
 
-REQUIRE "repository/FilmesRepositoryPDO.php"; 
+REQUIRE __DIR__."/../repository/FilmesRepositoryPDO.php"; 
 
-REQUIRE "util/ConsumoApi.php";
+REQUIRE __DIR__."/../util/ConsumoApi.php";
 
-REQUIRE "model/confirmacaoEmail.php";
+REQUIRE __DIR__."/../model/confirmacaoEmail.php";
 // use Heggdorne\repository\FilmesRepositoryPDO as FilmesRepositoryPDO;
 //Load Composer's autoloader
-require 'lib/vendor/autoload.php';
+require __DIR__."/../lib/vendor/autoload.php";
 class FilmesController{
     public function index($itens, $inicio){
         $filmesRepository = new FilmesRepositoryPDO();
@@ -57,10 +57,14 @@ class FilmesController{
         $dados = (object) $request;
         
         $dadosUsuario = $filmesRepository->validar($dados);
-        if( $dadosUsuario['dados']!== false) //Executa a instrução verificando se TRUE//
-            return $dadosUsuario;
-        else{
-            return false;
+        if( $dadosUsuario['dados']!== false){ //Executa a instrução verificando se TRUE//
+            header('Content-type: application/json');
+            echo json_encode($dadosUsuario);
+           // return $dadosUsuario;
+        }else{
+            header('Content-type: application/json');
+            echo json_encode(false);
+            //return false;
         }
     }
     //Recebe email 

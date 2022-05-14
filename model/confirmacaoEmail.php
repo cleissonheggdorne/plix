@@ -7,7 +7,7 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
-require 'lib/vendor/autoload.php';
+require __DIR__."/../lib/vendor/autoload.php";
 
 //Create an instance; passing `true` enables exceptions
 class ConfirmacaoEmail{

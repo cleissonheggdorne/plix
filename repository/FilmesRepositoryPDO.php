@@ -1,6 +1,6 @@
 <?php
 // namespace Heggdorne\repository;
-require "conexao.php";
+require __DIR__."\conexao.php";
 // use Heggdorne\repository\Conexao;
 
 class FilmesRepositoryPDO{
