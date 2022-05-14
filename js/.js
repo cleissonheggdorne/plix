@@ -37,11 +37,6 @@ async function redefinirSenha(){
     let id_input_email_recupera = document.getElementById('id_input_email_recupera');
     let email = id_input_email_recupera.value;
     console.log(email);
-    //console.log(id_recupera_senha);
-    // let metodo = {method: 'GET',
-    //                 headers: 
-    //                 {'Content-Type': 'application/json',
-    //                 'Accept': 'application/json'}};
     let dados = await fetch('/login?recupera='+ email);//, metodo);
     console.log(dados);
     let resposta = await dados.json();
@@ -49,6 +44,32 @@ async function redefinirSenha(){
     
     M.toast({html: resposta});
 }
+
+$(document).ready(function(){
+    $("#btn_login").click(function(){
+        console.log("Click ok");
+        var dados = new FormData();
+        dados.append('usuario', $("#usuario").val());
+        dados.append('senha', $("#senha").val());
+        console.log(dados);
+        $.ajax({
+            url: 'controller/auxControllerComAjax.php', //Caminho script
+            method: 'POST',
+            data: dados,
+            processData: false,
+            contentType: false,
+            success: function(resposta){
+                console.log("Resposta ok "+resposta)
+            }
+        })
+        
+    });
+})
+
+
+
+
+
 
 async function editarFilme(id){
     var edtFilme = document.getElementById('modal-editar-filme');

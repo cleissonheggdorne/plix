@@ -43,6 +43,14 @@ main {
     background-blend-mode: soft-light; 
 }
 
+/* .poster-filmes{
+    background-color: #e1bee7;
+}
+
+.carousel{
+    background-color: #e1bee7;
+} */
+
 /* Input de busca */
 .busca{
     opacity: 70%;

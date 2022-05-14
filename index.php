@@ -1,4 +1,5 @@
 <?php
+
 if(!isset($_SESSION)){
     session_start(); 
 }
@@ -6,7 +7,8 @@ if(!isset($_SESSION)){
 
 ini_set('display_errors', 0);
 
-require "./controller/FilmesController.php";
+require "controller/FilmesController.php";
+// use Heggdorne\controller\FilmesController;
 
 $rota = $_SERVER["REQUEST_URI"];
 $metodo = $_SERVER["REQUEST_METHOD"];
@@ -38,7 +40,7 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
         if(isset($email)){
             $controller = new FilmesController();
             $controller->redefinirSenha($email);
-            exit();
+            //exit();
         }
         $chave = filter_input(INPUT_GET, "chave", FILTER_SANITIZE_STRING);
         if (isset($_SESSION['usuario'])){
@@ -53,6 +55,7 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
             $controller->confirmaEmail($chave);
         }else
             require "./view/paginas/login.php";
+            //exit();
 
     if($metodo == "POST") {
             // $email = filter_input(INPUT_GET, 'recupera',FILTER_SANITIZE_EMAIL);
@@ -72,8 +75,9 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
                     if(isset($_SESSION['usuario']))
                         if($controller->verificaUsuario($_SESSION['usuario']))
                             $_SESSION['msg'] = "Seja Bem Vindo!";
-                            header("location: /");
-                            die();
+                            //require "./view/paginas/galeria.php";
+                            header("location: /login");
+                            exit();
                 }else if ($result['situacao'] === "aguardando confirmação"){
                     $_SESSION['msg'] = "Ops, precisamos que confirme seu email!";
                     header("location: /login");
@@ -332,6 +336,10 @@ if (substr($rota, 0, strlen("/filmes")) ==="/filmes"){
     }
     exit();
 }
+
+if($rota === '/phpinfo')
+    phpinfo();
+    exit;
 
 //Atualiza com API
 // if($rota === "/atualizaBack"){

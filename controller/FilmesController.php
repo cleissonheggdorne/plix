@@ -1,20 +1,18 @@
 <?php 
+// namespace Heggdorne\controller;
 
 if(!isset($_SESSION)){
     session_start(); 
 }
 
+REQUIRE "repository/FilmesRepositoryPDO.php"; 
 
-REQUIRE "./repository/FilmesRepositoryPDO.php";
-// REQUIRE "./model/Filme.php";
-REQUIRE "./util/ConsumoApi.php";
-//REQUIRE "."
-REQUIRE "./model/confirmacaoEmail.php";
+REQUIRE "util/ConsumoApi.php";
 
+REQUIRE "model/confirmacaoEmail.php";
+// use Heggdorne\repository\FilmesRepositoryPDO as FilmesRepositoryPDO;
 //Load Composer's autoloader
 require 'lib/vendor/autoload.php';
-
-
 class FilmesController{
     public function index($itens, $inicio){
         $filmesRepository = new FilmesRepositoryPDO();
@@ -77,7 +75,7 @@ class FilmesController{
                 $confirmaEmail = new ConfirmacaoEmail();
                 $result = $confirmaEmail->disparaEmailDeRecuperacao(['chave'=>$dadosRetorno['chave'], 'usuario'=>$email]);
                 if($result['msg'] === "ok"){
-                    $result['msg'] = 'Enviamos um email de recuperação para o email recuperado!';
+                    $result['msg'] = 'Enviamos um email de recuperação para o email digitado!';
                     header('Content-type: application/json');
                     echo json_encode($result['msg']);
                     

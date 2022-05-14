@@ -1,5 +1,5 @@
 <?php
-
+// namespace Heggdorne\repository;
 class Conexao{
     public static function criar():PDO{
         $env = parse_ini_file('.env');

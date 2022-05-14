@@ -11,7 +11,7 @@ require 'lib/vendor/autoload.php';
 
 //Create an instance; passing `true` enables exceptions
 class ConfirmacaoEmail{
-    public function disparaEmail($dados){
+    private function disparaEmail($dados){
         $mail = new PHPMailer(true);
         //$chave = $dados['chave'];
         $usuario = $dados['usuario'];
@@ -95,7 +95,7 @@ class ConfirmacaoEmail{
         $conteudoAlternativo = "Olá, parece que está tendo problemas com o login em nosso site? \n
                     Clique no link logo abaixo e você será redirecionado para uma página \n
                     onde poderá efetuar a mudança da sua senha \n\n
-                    <a href='http://localhost:8080/redefinir-senha?chave=$chave'>Redefinir Senha</a><\n\n
+                    http://localhost:8080/redefinir-senha?chave=$chave \n\n
                     Este email tem o intuito único e exclusivo de redefinição de senha. \n
                     NÃO RESPONDER!";
         return $this->disparaEmail(['usuario'=>$usuario,'assunto'=>$assunto, 'conteudo'=>$conteudo, 'conteudoAlternativo'=>$conteudoAlternativo]);
