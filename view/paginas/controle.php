@@ -84,7 +84,7 @@ if (!isset($_SESSION['busca']) or ($_SESSION['busca'] == "")) {
             <?php foreach ($destaques as $destaque) : ?>
                 <a class="carousel-item hoverable" href="/assistir/<?= str_replace(' ', '-', $destaque->titulo) . "?id=" . ($destaque->id) ?>">
                     <img src="<?= (str_contains($destaque->img_wide_1, 'imagens/posters')) ?  '/' . $destaque->img_wide_1 : $destaque->img_wide_1 ?>">
-                    <h3><?= $destaque->titulo ?></h3>
+                    <h3 class="title-destaque"><?= $destaque->titulo ?></h3>
                     <!--Botão Editar Slides -->
                     <button id="edit-slide" onclick="abreModal();" data_filme_id="<?= $destaque->id ?>" data-target="modal-edit-slides" class="btn-edit btn-floating btn modal-trigger halfway-fab waves-effect waves-light black">
                         <i class="material-icons">edit</i>

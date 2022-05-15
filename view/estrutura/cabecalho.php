@@ -37,6 +37,7 @@
     
     <!--Importa ícones do material design-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
    <!-- Importa arquivo css -->
     <link rel="stylesheet" href="/styles/style.css">
 

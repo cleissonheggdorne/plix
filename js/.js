@@ -1,5 +1,4 @@
-  //esconder itens do menu
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     var nvFilme = document.getElementById('modal-novo-filme');
     var importEmMassa = document.getElementById('modal-import-em-massa');
     var edtSlide = document.getElementById('modal-edit-slides');
@@ -49,17 +48,48 @@ $(document).ready(function(){
                 if(resposta['dados'] != false){
                     if(resposta['situacao'] === 'ativo'){
                         window.location.href = '/';
-                    }else if ($resposta['situacao'] === 'aguardando confirmação'){
+                    }else if (resposta['situacao'] === 'aguardando confirmação'){
                         M.toast({html: 'Ops, precisamos que confirme seu email!'});
                     }else{
                         M.toast({html: 'Seu usuário está inativo! Redefina a senha para ativá-lo.'});
                     }
                 }else{
-                    M.toast({html: 'Email ou Senha Incorretos'});
+                    c
                 }
              }
         })
     });
+    $("#btn-redefinir").click(function(){
+        var dados = new FormData();
+        dados.append('usuario', $("#usuario").val());
+        dados.append('senha1', $("#senha1").val());
+        dados.append('senha2', $("#senha2").val());
+        //if(dados['senha1'] != dados['senha2']){
+            M.toast({html: 'Senhas não conferem'});
+        //}
+        // $.ajax({
+        //     url: 'controller/auxControllerComAjax.php', //Caminho script
+        //     method: 'POST',
+        //     data: dados,
+        //     processData: false,
+        //     contentType: false,
+        //     success: function(resposta){
+        //         console.log(resposta);
+        //         if(resposta['dados'] != false){
+        //             if(resposta['situacao'] === 'ativo'){
+        //                 window.location.href = '/';
+        //             }else if (resposta['situacao'] === 'aguardando confirmação'){
+        //                 M.toast({html: 'Ops, precisamos que confirme seu email!'});
+        //             }else{
+        //                 M.toast({html: 'Seu usuário está inativo! Redefina a senha para ativá-lo.'});
+        //             }
+        //         }else{
+        //             M.toast({html: 'Email ou Senha Incorretos'});
+        //         }
+        //      }
+        // })
+    });
+
 })
 
 // Redefinir Senha

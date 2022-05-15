@@ -1,6 +1,6 @@
 <?php
 // namespace Heggdorne\repository;
-require __DIR__."\conexao.php";
+require __DIR__.DIRECTORY_SEPARATOR."conexao.php";
 // use Heggdorne\repository\Conexao;
 
 class FilmesRepositoryPDO{
@@ -61,6 +61,18 @@ class FilmesRepositoryPDO{
         
         return ['pass'=>$stmt->execute(), 'chave'=>$chave];
     }
+    public function buscaInfoUsuarioPorChave(String $chave){
+        $sql = "SELECT id, usuario FROM usuario WHERE chave = :chave";
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bindValue(':chave', $chave, PDO::PARAM_STR);
+        $stmt->execute();
+        if($stmt->rowCount()){
+            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+            return ['dados'=>$dados];
+        }else{
+            return ['dados'=>false];
+        }
+    }
 
     public function salvarUsuario($usuario):array{
         
@@ -81,6 +93,17 @@ class FilmesRepositoryPDO{
 
     }
 
+    public function redefinirSenha(Array $dados){
+        if($dados['dados']['senha1'] !== $dados['dados']['senha2']){
+            return false;
+        }else{
+            $sql = "UPDATE usuario SET chave = null, senha= :senha WHERE usuario = :usuario";
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindValue(':usuario', $dados['dados']['usuario'], pdo::PARAM_STR);
+            $stmt->bindValue(':senha', MD5($dados['dados']['senha1']), pdo::PARAM_STR);
+            return ['pass'=>$stmt->execute()];
+        }
+    }
     public function confirmaEmail($chave):array{
         $sql = "SELECT id FROM usuario WHERE chave = :chave LIMIT 1";
         $stmt = $this->conexao->prepare($sql);
@@ -367,23 +390,19 @@ class FilmesRepositoryPDO{
     }
 
     public function buscaDestaques(){
-        //$sql = "SELECT * FROM busca_destaque";
         $sql = "SELECT id, titulo, img_wide_1 FROM filmes WHERE destaque = true LIMIT 5";
         $stmt = $this->conexao->prepare($sql);
         $retornoDestaques = array();
         try{
             $destaques = $this->conexao->query($sql);
-            //$stmt->execute();
+         
          }catch(PDOException $e){
             return $e->getMessage();
          }
          while($dest = $destaques->fetchObject()){
             array_push($retornoDestaques, $dest);
          }
-        //  if($stmt->rowCount())
-        //     $retornoDestaques = $stmt->fetch(PDO::FETCH_ASSOC);
         return $retornoDestaques;
-
     }
 
     // Atualiza Destaque (Slides) na página inicial

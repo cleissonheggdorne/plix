@@ -87,6 +87,28 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
     exit();
 }
 
+if(substr($rota, 0, strlen("/redefinir-senha")) === "/redefinir-senha"){
+    
+    if ($metodo == "GET"){
+        $chave = filter_input(INPUT_GET, "chave", FILTER_UNSAFE_RAW);
+        $controller = new FilmesController();
+        $dados = $controller->atualizarSenha(['tipo'=>'READ','dados'=>$chave]);
+        if($dados['dados'] !== false){
+            $_SESSION['dados'] = $dados; 
+            require "./view/paginas/redefinirSenha.php";
+        }else{
+            $_SESSION['msg'] = 'Cadastro inexistente ou o link pode ter expirado!';
+            header('location: /login');
+        }
+    }else if($metodo == "POST") 
+        $usuario= $_REQUEST;
+        $controller = new FilmesController();
+        $dados = $controller->atualizarSenha(['tipo'=>'UPDATE','dados'=>$usuario]);
+        
+   
+    exit();
+}
+
 //Cadastro de Usuário
 if ($rota === "/cadastro-de-usuario") {
     $controller = new FilmesController();

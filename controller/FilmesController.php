@@ -116,7 +116,7 @@ class FilmesController{
         header("Location: /login"); //Redirecionamento de página
     }
 
-    public function confirmaEmail($chave){
+    public function confirmaEmail(String $chave){
         $filmesRepository = new FilmesRepositoryPDO();
         $retorno = $filmesRepository->confirmaEmail($chave);
         if($retorno['pass']){
@@ -125,6 +125,19 @@ class FilmesController{
             $_SESSION['msg'] = "E-mail não Verificado. Tente novamente";
         }
         header("Location: /login");
+    }
+
+    public function atualizarSenha(Array $dados){
+        if($dados['tipo'] === 'READ'){
+            $filmesRepository = new FilmesRepositoryPDO();
+            $retornoDadosUsuario = $filmesRepository->buscaInfoUsuarioPorChave($dados['dados']);
+            return $retornoDadosUsuario;
+        }else if($dados['tipo'] === 'UPDATE'){
+            $filmesRepository = new FilmesRepositoryPDO();
+            $retornoDadosUsuario = $filmesRepository->redefinirSenha($dados['dados']);
+            return $retornoDadosUsuario;
+        }
+        
     }
 
     public function verificaUsuario($user){
@@ -186,29 +199,6 @@ class FilmesController{
             header("Location: /syscontrol"); //Redirecionamento de página
             
         }
-    }
-
-    private function savePoster($tipo, $file){
-        
-        if($tipo === 'filme'){
-            $dir = "resources/imagens/posters/";
-            $path = $dir.basename($file["poster_file"]["name"]);
-            $tmp = $file["poster_file"]["tmp_name"];
-        }else{
-            $dir = "resources/arquivos/";
-            $path = $dir.basename($file["import_file"]["name"]);
-            $tmp = $file["import_file"]["tmp_name"];
-        }
-        
-        //$posterPath = $posterDir.basename($file["poster_file"]["name"]);
-        //$posterTmp = $file["poster_file"]["tmp_name"];
-        
-        if (move_uploaded_file($tmp, $path)){
-            return $path;
-        }else{
-            return false;
-        }
-
     }
 
     public function favorite(String $ids){ //id usuário e id filme
@@ -273,7 +263,7 @@ class FilmesController{
         $filmesRepository = new FilmesRepositoryPDO();
         $filme = (object) $request;
 
-        $upload = $this->savePoster($_FILES);
+        $upload = $this->savePoster('filme', $_FILES);
 
         if(gettype($upload)=="string"){
             $filme->poster = $upload;
@@ -285,6 +275,28 @@ class FilmesController{
             $_SESSION["msg"] = "Erro ao modificar informações doe filme";
 
         header("Location: /syscontrol"); //Redirecionamento de página
+
+    }
+    private function savePoster($tipo, $file){
+        
+        if($tipo === 'filme'){
+            $dir = "resources/imagens/posters/";
+            $path = $dir.basename($file["poster_file"]["name"]);
+            $tmp = $file["poster_file"]["tmp_name"];
+        }else{
+            $dir = "resources/arquivos/";
+            $path = $dir.basename($file["import_file"]["name"]);
+            $tmp = $file["import_file"]["tmp_name"];
+        }
+        
+        //$posterPath = $posterDir.basename($file["poster_file"]["name"]);
+        //$posterTmp = $file["poster_file"]["tmp_name"];
+        
+        if (move_uploaded_file($tmp, $path)){
+            return $path;
+        }else{
+            return false;
+        }
 
     }
     //Lista favoritos por usuário

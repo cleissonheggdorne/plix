@@ -13,7 +13,6 @@ require __DIR__."/../lib/vendor/autoload.php";
 class ConfirmacaoEmail{
     private function disparaEmail($dados){
         $mail = new PHPMailer(true);
-        //$chave = $dados['chave'];
         $usuario = $dados['usuario'];
         
         try{
@@ -29,7 +28,7 @@ class ConfirmacaoEmail{
             $mail->Port       = 2525;   
 
             //Recipients
-            $mail->setFrom('no-reply@plix.com', 'Mailer');
+            $mail->setFrom('cadastro@plix.app.br', 'Plix');
             $mail->addAddress($usuario);     //Add a recipient
             //$mail->addAddress('ellen@example.com');               //Name is optional
             //$mail->addReplyTo('info@example.com', 'Information');
@@ -52,12 +51,9 @@ class ConfirmacaoEmail{
 
             $mail->send();
             return ['msg'=>"ok"];
-            //$_SESSION["msg"] = "Usuário cadastrado com sucesso. Verifique seu e-mail.";
+           
         
         }catch (Exception $e) {
-            // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-            //$_SESSION["msg"] = "Erro ao cadastrar usuário";
-            //$_SESSION["msg"] = "{$mail->ErrorInfo}";
             return ['msg'=>$mail->ErrorInfo];
         }
     }
