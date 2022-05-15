@@ -54,7 +54,7 @@ Mensagem::mostrar();
         </div>
     </div>
 
-    <!-- Modal Para Cadastro de Novo Filme -->
+    <!-- Modal Redefinir Senha -->
     <div class="row">
         <!-- Modal Structure -->
         <div id="modal-redefinir-senha" class="modal modal-fixed-footer">

@@ -40,7 +40,7 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
         if(isset($email)){
             $controller = new FilmesController();
             $controller->redefinirSenha($email);
-            //exit();
+            exit();
         }
         $chave = filter_input(INPUT_GET, "chave", FILTER_SANITIZE_STRING);
         if (isset($_SESSION['usuario'])){
@@ -58,12 +58,6 @@ if (substr($rota, 0, strlen("/login"))  === "/login") {
             //exit();
 
     if($metodo == "POST") {
-            // $email = filter_input(INPUT_GET, 'recupera',FILTER_SANITIZE_EMAIL);
-            // if(isset($email)){
-            //     $controller = new FilmesController();
-            //     $controller->redefinirSenha($email);
-            //     exit();
-            // }
             $controller = new FilmesController();
             $result = $controller->validate($_REQUEST);    
             if($result){ //false or user

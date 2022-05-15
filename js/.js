@@ -32,26 +32,12 @@ function sair() {
     }
 }
 
-// Redefinir Senha
-async function redefinirSenha(){
-    let id_input_email_recupera = document.getElementById('id_input_email_recupera');
-    let email = id_input_email_recupera.value;
-    console.log(email);
-    let dados = await fetch('/login?recupera='+ email);//, metodo);
-    console.log(dados);
-    let resposta = await dados.json();
-    console.log(resposta);
-    
-    M.toast({html: resposta});
-}
-
+//Login
 $(document).ready(function(){
     $("#btn_login").click(function(){
-        console.log("Click ok");
         var dados = new FormData();
         dados.append('usuario', $("#usuario").val());
         dados.append('senha', $("#senha").val());
-        console.log(dados);
         $.ajax({
             url: 'controller/auxControllerComAjax.php', //Caminho script
             method: 'POST',
@@ -59,17 +45,31 @@ $(document).ready(function(){
             processData: false,
             contentType: false,
             success: function(resposta){
-                console.log("Resposta ok "+resposta)
-            }
+                console.log(resposta);
+                if(resposta['dados'] != false){
+                    if(resposta['situacao'] === 'ativo'){
+                        window.location.href = '/';
+                    }else if ($resposta['situacao'] === 'aguardando confirmação'){
+                        M.toast({html: 'Ops, precisamos que confirme seu email!'});
+                    }else{
+                        M.toast({html: 'Seu usuário está inativo! Redefina a senha para ativá-lo.'});
+                    }
+                }else{
+                    M.toast({html: 'Email ou Senha Incorretos'});
+                }
+             }
         })
-        
     });
 })
 
-
-
-
-
+// Redefinir Senha
+async function redefinirSenha(){
+    let id_input_email_recupera = document.getElementById('id_input_email_recupera');
+    let email = id_input_email_recupera.value;
+    let dados = await fetch('/login?recupera='+ email);//, metodo);
+    let resposta = await dados.json();
+    M.toast({html: resposta});
+}
 
 async function editarFilme(id){
     var edtFilme = document.getElementById('modal-editar-filme');
@@ -105,20 +105,15 @@ async function pesquisaTitulos(valor){
             options[resposta['dados'][i].titulo] = resposta['dados'][i].poster;
             tituloEId[resposta['dados'][i].titulo]       = resposta['dados'][i].id;
         }
-
-        //console.log("Options: " + options);
-          
         var elems = document.getElementById('titulobuscado');
         var instances = M.Autocomplete.init(elems,
             {data: options,
             minLength: 3,
             onAutocomplete:async function(res){ //Traz informações para a tela
                 if(res in tituloEId){
-                   // console.log('id tmdb; '+ tituloEId[res]);
                     var idTmdb = tituloEId[res];
                     var dadosInfoFilmesApi =  await fetch('/syscontrol?id-filme-tmdb=' + idTmdb);
                     dadosInfoFilmesApi = await dadosInfoFilmesApi.json();
-                    //console.log(dadosInfoFilmesApi);
                     document.getElementById("titulo").value = dadosInfoFilmesApi[0].title
                     document.getElementById("sinopse").innerHTML = dadosInfoFilmesApi[0].sinopse
                     document.getElementById("nota").value = dadosInfoFilmesApi[0].nota
@@ -132,11 +127,9 @@ async function pesquisaTitulos(valor){
     }
 }
 
-//Auto complete modal destaque
 //Auto Complete
 async function buscaDestaque(valor){
 
-    //console.log(valor)
     if(valor.length >= 3 ){
         var dados = await fetch('/syscontrol?titulo-para-buscar=' + valor+ '&tipo=db');
          var resposta = await dados.json();
@@ -169,7 +162,6 @@ async function selecionaSlide(idNovo){
     var dados = await fetch('/syscontrol?id-para-destaque=' + idNovo + '&id-anterior='+ id_anterior)
     var resposta = await dados.json()
     location.reload()
-    
 }
 
 
@@ -186,8 +178,6 @@ async function pesquisaParaSlide(valor){
             tituloEId[resposta['dados'][i].titulo]       = resposta['dados'][i].id;
         }
 
-        //console.log("Options: " + options);
-          
         var elems = document.getElementById('titulobuscadoslide');
         var instances = M.Autocomplete.init(elems,
             {data: options,

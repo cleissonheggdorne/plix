@@ -6,9 +6,7 @@ if(!isset($_SESSION)){
 }
 
 REQUIRE __DIR__."/../repository/FilmesRepositoryPDO.php"; 
-
 REQUIRE __DIR__."/../util/ConsumoApi.php";
-
 REQUIRE __DIR__."/../model/confirmacaoEmail.php";
 // use Heggdorne\repository\FilmesRepositoryPDO as FilmesRepositoryPDO;
 //Load Composer's autoloader
@@ -52,20 +50,23 @@ class FilmesController{
         echo json_encode($result);
     }
 
+    // Valida login 
     public function validate($request){
         $filmesRepository = new FilmesRepositoryPDO();
         $dados = (object) $request;
         
         $dadosUsuario = $filmesRepository->validar($dados);
-        if( $dadosUsuario['dados']!== false){ //Executa a instrução verificando se TRUE//
-            header('Content-type: application/json');
-            echo json_encode($dadosUsuario);
-           // return $dadosUsuario;
-        }else{
-            header('Content-type: application/json');
-            echo json_encode(false);
-            //return false;
+        if($dadosUsuario['dados']!== false){ //Executa a instrução verificando se TRUE//
+            if($dadosUsuario['situacao'] === 'ativo'){
+                $_SESSION['usuario'] = $dadosUsuario['dados']['usuario'];
+                $_SESSION['id_usuario'] = $dadosUsuario['dados']['id'];
+                $_SESSION['admin'] = $dadosUsuario['dados']['admin'];
+                $_SESSION['msg'] = 'Seja bem vindo!';
+            }
         }
+        header('Content-type: application/json');
+        echo json_encode($dadosUsuario);
+        
     }
     //Recebe email 
     public function redefinirSenha(String $email){
